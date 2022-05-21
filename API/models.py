@@ -98,15 +98,12 @@ class New(models.Model):
     title = models.CharField(max_length=255)
     img = models.ImageField(upload_to='news/')
     text = models.TextField(null=True,blank=True)
-    text2 = models.TextField(null=True,blank=True)
 
     en_title = models.CharField(max_length=255)
     en_text = models.TextField(null=True,blank=True)
-    en_text2 = models.TextField(null=True,blank=True)
 
     ru_title = models.CharField(max_length=255)
     ru_text = models.TextField(null=True,blank=True)
-    ru_text2 = models.TextField(null=True,blank=True)
     def __str__(self):
         return self.title
 

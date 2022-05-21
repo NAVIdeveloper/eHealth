@@ -11,10 +11,9 @@ urlpatterns = [
     path("comment/",CommentView.as_view()),
     
     path("news/",View_News),
-    path("news/<int:pk>/",View_News_Detail),
 
     path("advice/",View_Advice),
     path("advice/random/",View_Advice_Random),    
 
-    path("healthyUp/",View_Health_App)    
+    path("homeheader/",View_Health_App)    
 ]

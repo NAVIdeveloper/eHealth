@@ -58,6 +58,8 @@ def View_Register(request):
         if type_client == '2':
             bio = request.POST['bio']
             video = request.POST['video']
+            
+
             user = User.objects.create(username=username,password=password,email=email,first_name=first_name,last_name=last_name,user_type=int(type_client),bio=bio,video=video)
         else:
             type_g = request.POST['type_g']
@@ -137,11 +139,6 @@ def View_News(request):
     DATA = LoaderNew(New.objects.all(),many=True).data
     return Response(DATA)
 
-@api_view(['get'])
-@permission_classes([AllowAny])
-def View_News_Detail(request,pk):
-    DATA = LoaderNew(New.objects.get(id=pk)).data
-    return Response(DATA)
 
 @api_view(['get'])
 @permission_classes([AllowAny])
