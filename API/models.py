@@ -1,4 +1,5 @@
 from datetime import datetime
+from distutils.command.upload import upload
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from rest_framework.authtoken.models import Token
@@ -35,7 +36,7 @@ class Sport(models.Model):
         return self.name
 
 class User(AbstractUser):
-    # client = models.ForeignKey(Client,on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='profile/',null=True,blank=True)
     going_to_loss = models.IntegerField(default=0,null=True,blank=True)
     user_type = models.IntegerField(choices=(
         (1, "client"),
@@ -147,4 +148,4 @@ class HealthApp(models.Model):
     img = models.ImageField(upload_to="healthapp/")
 
     def __str__(self):
-        return self.title
+        return self.title_uz

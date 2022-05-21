@@ -9,8 +9,10 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import authentication_classes,permission_classes
-from rest_framework.permissions import IsAuthenticated,AllowAny
+from rest_framework.permissions import IsAuthenticated,AllowAny,IsAdminUser
 from rest_framework.authentication import TokenAuthentication
+from rest_framework import viewsets
+from rest_framework.decorators import action
 
 
 def check_algoritm(obj):
@@ -57,8 +59,13 @@ def View_Register(request):
     except:
         if type_client == '2':
             bio = request.POST['bio']
-            video = request.POST['video']
+            age = request.POST['age']
+            experience = request.POST['experience']
             
+            pic = None
+            if 'pic' in request.FILES:
+                pic = request.FILES['pic']
+            phone = request
 
             user = User.objects.create(username=username,password=password,email=email,first_name=first_name,last_name=last_name,user_type=int(type_client),bio=bio,video=video)
         else:
@@ -67,7 +74,7 @@ def View_Register(request):
             age = request.POST['age']
             height = request.POST['height']
             weight = request.POST['weight']
-            type_t = int(request.POST['type_t'])
+            type_t = int(request.POST['type_loss'])
             going_to_loss = int(request.POST["going_to_loss"])
             can_not_dieta = []
             can_not_sports = []
@@ -98,12 +105,90 @@ def View_Register(request):
             }
         return Response(DATA)
 
-@api_view(['get'])
-@permission_classes([AllowAny])
-def View_Product(request):
-    print("sms")
-    DATA = LoaderProduct(Product.objects.all(),many=True).data
-    return Response(DATA)
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = LoaderProduct
+    permission_classes = [IsAdminUser]
+    
+    def get_permissions(self):
+        if self.action == "list" or self.action == 'retrieve':
+            return [AllowAny()]
+
+        return [IsAdminUser()]
+
+class SportViewSet(viewsets.ModelViewSet):
+    queryset = Sport.objects.all()
+    serializer_class = LoaderSport
+    permission_classes = [IsAdminUser]
+
+    def get_permissions(self):
+        if self.action == "list" or self.action == 'retrieve':
+            return [AllowAny()]
+        print(self.action)
+        return [IsAdminUser()]
+
+class AdviceViewSet(viewsets.ModelViewSet):
+    queryset = Advice.objects.all()
+    serializer_class = LoaderAdvice
+    permission_classes = [IsAdminUser]
+
+    def get_permissions(self):
+        if self.action == "list" or self.action == 'retrieve':
+            return [AllowAny()]
+
+        return [IsAdminUser()]
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = LoaderComment
+    htpp_method_names = ['get','delete']
+    permission_classes = [IsAdminUser]
+
+    def get_permissions(self):
+        if self.action == "list" or self.action == 'retrieve':
+            return [AllowAny()]
+
+        return [IsAdminUser()]
+
+class NewViewSet(viewsets.ModelViewSet):
+    queryset = New.objects.all()
+    serializer_class = LoaderNew
+    permission_classes = [IsAdminUser]
+
+    def get_permissions(self):
+        if self.action == "list" or self.action == 'retrieve':
+            return [AllowAny()]
+
+        return [IsAdminUser()]
+
+class HealthAppViewSet(viewsets.ModelViewSet):
+    queryset = HealthApp.objects.all()
+    serializer_class = LoaderHealthApp
+    permission_classes = [IsAdminUser]
+    
+    def get_permissions(self):
+        if self.action == "list" or self.action == 'retrieve':
+            return [AllowAny()]
+
+        return [IsAdminUser()]
+
+
+class CategoryProductViewSet(viewsets.ModelViewSet):
+    queryset = CategoryProduct.objects.all()
+    serializer_class = LoaderCategoryProduct
+    permission_classes = [IsAdminUser]
+    
+    def get_permissions(self):
+        if self.action == "list" or self.action == 'retrieve':
+            return [AllowAny()]
+
+        return [IsAdminUser()]
+    
+    def retrieve(self, request, pk=None):
+        products = Product.objects.filter(category__id=pk)
+        serializer = LoaderProduct(products,many=True)
+        return Response(serializer.data)
+
 
 @api_view(['get','post'])
 @permission_classes([IsAuthenticated])
@@ -117,44 +202,18 @@ def View_Category(request):
         id = int(request.POST['id'])
         products = Product.objects.filter(category__id=id)
 
-@api_view(['get'])
-@permission_classes([AllowAny])
-def View_Sport(request):
-    DATA = LoaderSport(Sport.objects.all(),many=True).data
-    return Response(DATA)
-
-class CommentView(ListCreateAPIView):
-    queryset = Comment.objects.all()
-    serializer_class = LoaderComment
-    permission_classes = [IsAuthenticated]
-    
-    def post(self,request):
-        comment = Comment.objects.create(user=request.user,text=request.POST['text'])
-        data = LoaderComment(comment)
-        return Response(data.data)
-
-@api_view(['get'])
-@permission_classes([AllowAny])
-def View_News(request):
-    DATA = LoaderNew(New.objects.all(),many=True).data
-    return Response(DATA)
 
 
-@api_view(['get'])
-@permission_classes([AllowAny])
-def View_Advice(request):
-    DATA = LoaderAdvice(Advice.objects.all().order_by('-id'),many=True).data
-    return Response(DATA)
 
-@api_view(['get'])
-@permission_classes([AllowAny])
-def View_Advice_Random(request):
-    DATA = LoaderAdvice(random.choice( Advice.objects.all().order_by('-id') )).data
-    return Response(DATA)
+# @api_view(['get'])
+# @permission_classes([AllowAny])
+# def View_Advice_Random(request):
+#     DATA = LoaderAdvice(random.choice( Advice.objects.all().order_by('-id') )).data
+#     return Response(DATA)
 
-@api_view(['get'])
-@permission_classes([AllowAny])
-def View_Health_App(request):
-    DATA = LoaderHealthApp(HealthApp.objects.last()).data
-    return Response(DATA)
+# @api_view(['get'])
+# @permission_classes([AllowAny])
+# def View_Health_App(request):
+#     DATA = LoaderHealthApp(HealthApp.objects.last()).data
+#     return Response(DATA)
 
