@@ -43,7 +43,7 @@ class User(AbstractUser):
         (2, "expert")
     ), default=1)
     bio = models.TextField(null=True,blank=True)
-    video = models.URLField(null=True,blank=True)
+    network = models.URLField(null=True,blank=True)
     reyting = models.FloatField(default=0,null=True,blank=True)
     reyting_count = models.IntegerField(default=0,null=True,blank=True)
     type_g = [
@@ -134,15 +134,15 @@ class HealthApp(models.Model):
     logo = models.ImageField(upload_to="healthapp/")
     
     title_uz  = models.CharField(max_length=255)
-    text_uz = models.TextField()
-    text2_uz = models.CharField(max_length=255)
-    
     title_en  = models.CharField(max_length=255)
-    text_en = models.TextField()
-    text2_en = models.CharField(max_length=255)
-    
     title_ru  = models.CharField(max_length=255)
+    
+    text_uz = models.TextField()
+    text_en = models.TextField()
     text_ru = models.TextField()
+    
+    text2_uz = models.CharField(max_length=255)   
+    text2_en = models.CharField(max_length=255)
     text2_ru = models.CharField(max_length=255)
     
     img = models.ImageField(upload_to="healthapp/")

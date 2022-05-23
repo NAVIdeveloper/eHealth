@@ -188,32 +188,3 @@ class CategoryProductViewSet(viewsets.ModelViewSet):
         products = Product.objects.filter(category__id=pk)
         serializer = LoaderProduct(products,many=True)
         return Response(serializer.data)
-
-
-@api_view(['get','post'])
-@permission_classes([IsAuthenticated])
-@authentication_classes([TokenAuthentication])
-def View_Category(request):
-    if request.method == 'GET':   
-        DATA = {}
-        DATA = LoaderCategoryProduct(CategoryProduct.objects.all(),many=True).data
-        return Response(DATA)
-    elif request.method == 'POST':  
-        id = int(request.POST['id'])
-        products = Product.objects.filter(category__id=id)
-
-
-
-
-# @api_view(['get'])
-# @permission_classes([AllowAny])
-# def View_Advice_Random(request):
-#     DATA = LoaderAdvice(random.choice( Advice.objects.all().order_by('-id') )).data
-#     return Response(DATA)
-
-# @api_view(['get'])
-# @permission_classes([AllowAny])
-# def View_Health_App(request):
-#     DATA = LoaderHealthApp(HealthApp.objects.last()).data
-#     return Response(DATA)
-
