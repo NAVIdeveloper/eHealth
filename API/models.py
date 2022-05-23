@@ -19,7 +19,7 @@ class Product(models.Model):
     ru_name = models.CharField(max_length=255)
 
     category = models.ForeignKey(CategoryProduct,on_delete=models.CASCADE)
-    kaloriya = models.IntegerField()
+    kaloriya = models.FloatField()
 
     def __str__(self):
         return self.name
@@ -30,7 +30,7 @@ class Sport(models.Model):
     ru_name = models.CharField(max_length=255)
     
     video = models.URLField(null=True,blank=True)
-    kaloriya = models.IntegerField()
+    kaloriya = models.FloatField()
     
     def __str__(self):
         return self.name
@@ -42,6 +42,10 @@ class User(AbstractUser):
         (1, "client"),
         (2, "expert")
     ), default=1)
+    expert_type = models.IntegerField(choices=(
+        (1, "dietolog"),
+        (2, "sportsmen")
+    ),null=True,blank=True)
     bio = models.TextField(null=True,blank=True)
     network = models.URLField(null=True,blank=True)
     reyting = models.FloatField(default=0,null=True,blank=True)
@@ -56,8 +60,8 @@ class User(AbstractUser):
     age = models.IntegerField(null=True,blank=True)
     height = models.IntegerField(null=True,blank=True)
     weight = models.FloatField(null=True,blank=True)
-    task_sport_can_not = models.ManyToManyField(Sport)
-    task_dieta_can_not = models.ManyToManyField(Sport, related_name="NoDieta")
+    task_sport_can_not = models.ManyToManyField(Sport,null=True,blank=True)
+    task_dieta_can_not = models.ManyToManyField(Product,null=True,blank=True, related_name="NoDieta")
     type_t = [
         (1,"Dieta"),
         (2,"Sport"),
@@ -73,7 +77,7 @@ class Comment(models.Model):
     text = models.TextField()
     date = models.DateTimeField(default = datetime.now)
     def __str__(self):
-        return self.name
+        return self.user
 
 class HistoryReyting(models.Model):
     expert = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -149,3 +153,11 @@ class HealthApp(models.Model):
 
     def __str__(self):
         return self.title_uz
+
+class MotivationLetter(models.Model):
+    text_uz = models.TextField()
+    text_ru = models.TextField()
+    text_en = models.TextField()
+    img = models.ImageField(upload_to='motivation_letter/')
+    def __str__(self):
+        return self.text_uz

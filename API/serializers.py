@@ -55,3 +55,13 @@ class LoaderHealthApp(ModelSerializer):
     class Meta:
         model = HealthApp
         fields = "__all__"
+
+class LoaderMotivationLetter(ModelSerializer):
+    class Meta:
+        model = MotivationLetter
+        fields = "__all__"
+
+class LoaderExpertUser(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('first_name','last_name','image','expert_type')

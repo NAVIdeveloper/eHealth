@@ -138,6 +138,7 @@ class AdviceViewSet(viewsets.ModelViewSet):
             return [AllowAny()]
 
         return [IsAdminUser()]
+
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = LoaderComment
@@ -188,3 +189,22 @@ class CategoryProductViewSet(viewsets.ModelViewSet):
         products = Product.objects.filter(category__id=pk)
         serializer = LoaderProduct(products,many=True)
         return Response(serializer.data)
+
+class MotivationLetterViewSet(viewsets.ModelViewSet):
+    queryset = MotivationLetter.objects.all()
+    serializer_class = LoaderMotivationLetter
+    permission_classes = [IsAdminUser]
+    
+    def get_permissions(self):
+        if self.action == "list" or self.action == 'retrieve':
+            return [AllowAny()]
+
+        return [IsAdminUser()]
+
+@api_view(['get'])
+@permission_classes([AllowAny])
+def Api_Top_Expert(request):
+    experts = User.objects.filter(user_type=2)
+
+    return Response(LoaderExpertUser(experts,many=True).data)
+
