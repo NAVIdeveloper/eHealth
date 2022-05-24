@@ -203,7 +203,7 @@ class MotivationLetterViewSet(viewsets.ModelViewSet):
 
 @api_view(['get'])
 @permission_classes([AllowAny])
-def Api_Top_Expert(request):
+def Api_Expert(request):
     experts = User.objects.filter(user_type=2)
 
     return Response(LoaderExpertUser(experts,many=True).data)
