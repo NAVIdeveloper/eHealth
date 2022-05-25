@@ -65,3 +65,8 @@ class LoaderExpertUser(ModelSerializer):
     class Meta:
         model = User
         fields = ('first_name','last_name','image','expert_type')
+
+class LoaderFastLost(ModelSerializer):
+    class Meta:
+        model = FastLost
+        fields = "__all__"

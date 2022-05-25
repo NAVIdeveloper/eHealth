@@ -161,3 +161,10 @@ class MotivationLetter(models.Model):
     img = models.ImageField(upload_to='motivation_letter/')
     def __str__(self):
         return self.text_uz
+
+
+class FastLost(models.Model):
+    image = models.ImageField(upload_to='fastlost/')
+    name_uz = models.CharField(max_length=40, blank=True, null=True)
+    name_ru = models.CharField(max_length=40, blank=True, null=True)
+    name_en = models.CharField(max_length=40, blank=True, null=True)

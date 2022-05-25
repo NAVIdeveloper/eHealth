@@ -208,3 +208,14 @@ def Api_Expert(request):
 
     return Response(LoaderExpertUser(experts,many=True).data)
 
+
+class FastLostView(viewsets.ModelViewSet):
+    queryset = FastLost.objects.all()
+    serializer_class = LoaderFastLost
+    permission_classes = [IsAdminUser]
+
+    def get_permissions(self):
+        if self.action == "list" or self.action == 'retrieve':
+            return [AllowAny()]
+
+        return [IsAdminUser()]
