@@ -67,7 +67,7 @@ def View_Register(request):
                 pic = request.FILES['pic']
             phone = request
 
-            user = User.objects.create(username=username,password=password,email=email,first_name=first_name,last_name=last_name,user_type=int(type_client),bio=bio,video=video)
+            user = User.objects.create(username=username,password=password,email=email,first_name=first_name,last_name=last_name,user_type=int(type_client),bio=bio)
         else:
             type_g = request.POST['type_g']
             register_date = datetime.datetime.now()
