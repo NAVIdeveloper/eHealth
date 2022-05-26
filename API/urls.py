@@ -5,5 +5,4 @@ from .router import router
 urlpatterns = [
     path("register/",View_Register),
     path("",include(router.urls)),
-    path("expert/",Api_Expert),
-]
+    path("expert/",Api_Expert), ]

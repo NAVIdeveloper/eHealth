@@ -60,8 +60,8 @@ class User(AbstractUser):
     age = models.IntegerField(null=True,blank=True)
     height = models.IntegerField(null=True,blank=True)
     weight = models.FloatField(null=True,blank=True)
-    task_sport_can_not = models.ManyToManyField(Sport,null=True,blank=True)
-    task_dieta_can_not = models.ManyToManyField(Product,null=True,blank=True, related_name="NoDieta")
+    task_sport_can_not = models.ManyToManyField(Sport,blank=True)
+    task_dieta_can_not = models.ManyToManyField(Product,blank=True, related_name="NoDieta")
     type_t = [
         (1,"Dieta"),
         (2,"Sport"),
@@ -168,3 +168,9 @@ class FastLost(models.Model):
     name_uz = models.CharField(max_length=40, blank=True, null=True)
     name_ru = models.CharField(max_length=40, blank=True, null=True)
     name_en = models.CharField(max_length=40, blank=True, null=True)
+
+
+    def __str__(self):
+        return self.name_uz
+
+
