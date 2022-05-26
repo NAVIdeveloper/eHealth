@@ -174,3 +174,20 @@ class FastLost(models.Model):
         return self.name_uz
 
 
+
+class DailyMotivation(models.Model):
+    text_uz = models.CharField(max_length=300, null=True, blank=True)
+    text_ru = models.CharField(max_length=300, null=True, blank=True)
+    text_en = models.CharField(max_length=300, null=True, blank=True)
+
+    def __str__(self):
+        return self.text_uz
+
+class WeeklyMusic(models.Model):
+    name = models.CharField(max_length=30, blank=True, null=True)
+
+    music = models.FileField(upload_to='music')
+
+    def __str__(self) -> str:
+        return self.name
+
