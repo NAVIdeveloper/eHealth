@@ -70,3 +70,14 @@ class LoaderFastLost(ModelSerializer):
     class Meta:
         model = FastLost
         fields = "__all__"
+
+class LoaderWeeklyMusic(ModelSerializer):
+    class Meta:
+        model = WeeklyMusic
+        fields = '__all__'
+
+class LoaderDailyMotivation(ModelSerializer):
+    class Meta:
+        model = DailyMotivation
+        fields = "__all__"
+

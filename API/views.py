@@ -43,6 +43,7 @@ def algoritm_loss(days:int,kg:int):
     return have_to_loss_a_day   
 
 
+
 @api_view(['post'])
 @permission_classes([AllowAny])
 def View_Register(request):
@@ -219,3 +220,50 @@ class FastLostView(viewsets.ModelViewSet):
             return [AllowAny()]
 
         return [IsAdminUser()]
+
+class WeeklyMusicView(viewsets.ModelViewSet):
+    queryset = WeeklyMusic.objects.all()
+    serializer_class = LoaderWeeklyMusic
+    permission_classes = [IsAdminUser]
+
+    def get_permissions(self):
+        if self.action == "list" or self.action == 'retrieve':
+            return [AllowAny()]
+
+        return [IsAdminUser()]
+
+class DailyMotivationView(viewsets.ModelViewSet):
+    queryset = DailyMotivation.objects.all()
+    serializer_class = LoaderDailyMotivation
+    permission_classes = [IsAdminUser]
+
+    def get_permissions(self):
+        if self.action == "list" or self.action == 'retrieve':
+            return [AllowAny()]
+
+        return [IsAdminUser()]
+
+@api_view(['post'])
+@permission_classes([TokenAuthentication])
+@authentication_classes([IsAuthenticated])
+def View_Post_Reyting(request):
+    user = request.user
+    expert = request.POST['expert']
+    expert=User.objects.get(username=expert)
+    star = int(request.POST['star'])
+    history = False
+    try:
+        history = HistoryReyting.objects.get(user=user,expert=expert)
+        old_star = history.star
+        history.star = star
+        history.save()
+        expert.reyting -= old_star
+        expert.reyting += star
+        expert.save()
+
+    except:
+        history = HistoryReyting.objects.create(user=user,expert=expert,star=star)
+        expert.reyting += star
+        expert.reyting_count += 1
+
+    return Response(status=200)

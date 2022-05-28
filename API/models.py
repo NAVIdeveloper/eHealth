@@ -130,7 +130,7 @@ class Normal(models.Model):
     age_end = models.IntegerField()
     height = models.IntegerField(unique=True)
     male_weight = models.FloatField()    
-    male_weight = models.FloatField()    
+    female_weight = models.FloatField()    
     def __str__(self):
         return str(self.height)
 
@@ -185,8 +185,7 @@ class DailyMotivation(models.Model):
 
 class WeeklyMusic(models.Model):
     name = models.CharField(max_length=30, blank=True, null=True)
-
-    music = models.FileField(upload_to='music')
+    music = models.FileField(upload_to='music/')
 
     def __str__(self) -> str:
         return self.name
