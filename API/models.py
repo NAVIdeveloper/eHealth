@@ -1,5 +1,4 @@
 from datetime import datetime
-from distutils.command.upload import upload
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from rest_framework.authtoken.models import Token
@@ -77,7 +76,7 @@ class Comment(models.Model):
     text = models.TextField()
     date = models.DateTimeField(default = datetime.now)
     def __str__(self):
-        return self.user
+        return self.user.username
 
 class HistoryReyting(models.Model):
     expert = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -113,17 +112,19 @@ class New(models.Model):
         return self.title
 
 class Advice(models.Model):
-    title = models.CharField(max_length=255)
-    text = models.CharField(max_length=255)
-
-    en_title = models.CharField(max_length=255)
+    uz_text = models.CharField(max_length=255)
     en_text = models.CharField(max_length=255)
-    
-    ru_title = models.CharField(max_length=255)
     ru_text = models.CharField(max_length=255)
     
     def __str__(self):
-        return self.text
+        return self.uz_text
+
+class TitleAdvice(models.Model):
+    uz_title = models.CharField(max_length=255)
+    en_title = models.CharField(max_length=255)
+    ru_title = models.CharField(max_length=255)
+    def __str__(self):
+        return self.uz_title
 
 class Normal(models.Model):
     age_start = models.IntegerField()
@@ -189,4 +190,3 @@ class WeeklyMusic(models.Model):
 
     def __str__(self) -> str:
         return self.name
-

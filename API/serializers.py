@@ -46,25 +46,29 @@ class LoaderAdvice(ModelSerializer):
         model = Advice
         fields = "__all__"
 
+
 class LoaderNew(ModelSerializer):
     class Meta:
         model = New
         fields = "__all__"
+
 
 class LoaderHealthApp(ModelSerializer):
     class Meta:
         model = HealthApp
         fields = "__all__"
 
+
 class LoaderMotivationLetter(ModelSerializer):
     class Meta:
         model = MotivationLetter
         fields = "__all__"
 
+
 class LoaderExpertUser(ModelSerializer):
     class Meta:
         model = User
-        fields = ('first_name','last_name','image','expert_type')
+        fields = ('first_name','last_name','image','expert_type','reyting','reyting_count')
 
 class LoaderFastLost(ModelSerializer):
     class Meta:

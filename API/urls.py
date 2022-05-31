@@ -7,4 +7,5 @@ urlpatterns = [
     path("",include(router.urls)),
     path("expert/",Api_Expert), 
     path("post-reyting/",View_Post_Reyting),    
+    path("search/",Api_Search_Expert),
 ]

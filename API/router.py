@@ -13,3 +13,4 @@ router.register('motivation_letter', MotivationLetterViewSet)
 router.register('fastlost', FastLostView)
 router.register("day-motivation",DailyMotivationView)
 router.register("weel-music",WeeklyMusicView)
+

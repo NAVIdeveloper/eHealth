@@ -5,6 +5,7 @@ import datetime
 from .serializers import *
 from rest_framework.generics import ListCreateAPIView
 # Create your views here.
+from django.db.models import Q as SearchQ
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
@@ -146,11 +147,18 @@ class CommentViewSet(viewsets.ModelViewSet):
     htpp_method_names = ['get','delete']
     permission_classes = [IsAdminUser]
 
+    def create(self,request):
+        user = request.user
+        text = request.POST['text']
+        comment = Comment.objects.create(user=user,text=text)
+        return Response(LoaderComment(comment).data)
+    
     def get_permissions(self):
         if self.action == "list" or self.action == 'retrieve':
             return [AllowAny()]
 
         return [IsAdminUser()]
+    
 
 class NewViewSet(viewsets.ModelViewSet):
     queryset = New.objects.all()
@@ -191,6 +199,7 @@ class CategoryProductViewSet(viewsets.ModelViewSet):
         serializer = LoaderProduct(products,many=True)
         return Response(serializer.data)
 
+
 class MotivationLetterViewSet(viewsets.ModelViewSet):
     queryset = MotivationLetter.objects.all()
     serializer_class = LoaderMotivationLetter
@@ -206,8 +215,9 @@ class MotivationLetterViewSet(viewsets.ModelViewSet):
 @permission_classes([AllowAny])
 def Api_Expert(request):
     experts = User.objects.filter(user_type=2)
-
-    return Response(LoaderExpertUser(experts,many=True).data)
+    data = LoaderExpertUser(experts,many=True).data
+    
+    return Response(data)
 
 
 class FastLostView(viewsets.ModelViewSet):
@@ -243,9 +253,10 @@ class DailyMotivationView(viewsets.ModelViewSet):
 
         return [IsAdminUser()]
 
+
 @api_view(['post'])
-@permission_classes([TokenAuthentication])
-@authentication_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def View_Post_Reyting(request):
     user = request.user
     expert = request.POST['expert']
@@ -260,10 +271,18 @@ def View_Post_Reyting(request):
         expert.reyting -= old_star
         expert.reyting += star
         expert.save()
-
+        return Response(status=200)
     except:
         history = HistoryReyting.objects.create(user=user,expert=expert,star=star)
         expert.reyting += star
         expert.reyting_count += 1
+        expert.save()
+        return Response(status=201)
 
-    return Response(status=200)
+
+@api_view(['get'])
+def Api_Search_Expert(request):
+    search = request.GET['search']
+    data = User.objects.filter(SearchQ(first_name__icontains=search) | SearchQ(last_name__icontains=search) | SearchQ(username__icontains=search),user_type=2)
+    return Response(LoaderExpertUser(data,many=True).data)
+
