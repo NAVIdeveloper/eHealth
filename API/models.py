@@ -85,19 +85,6 @@ class HistoryReyting(models.Model):
     def __str__(self):
         return f"{self.user.username} : {str(self.star)} -> {self.expert.username}"
 
-class TaskSport(models.Model):
-    client = models.ForeignKey(User,on_delete=models.CASCADE)
-    activity = models.ForeignKey(Sport, on_delete=models.CASCADE)
-    duration = models.IntegerField()
-
-
-class TaskDieta(models.Model):
-    client = models.ForeignKey(User,on_delete=models.CASCADE)
-    morning = models.ManyToManyField(Product, related_name='morning_time')
-    lunch = models.ManyToManyField(Product, related_name='lunch_time')
-    night = models.ManyToManyField(Product)
-    limit = models.DateField()
-
 class New(models.Model):
     title = models.CharField(max_length=255)
     img = models.ImageField(upload_to='news/')
@@ -190,3 +177,47 @@ class WeeklyMusic(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+class TaskSport(models.Model):
+    activity = models.ForeignKey(Sport, on_delete=models.CASCADE)
+    duration = models.IntegerField()
+    total_calories =models.IntegerField()
+    def __str__(self): 
+        return self.activity.name
+    
+
+class TaskDieta(models.Model):
+    product = models.ManyToManyField(Product)
+    grams = models.IntegerField()
+    total_calories =models.IntegerField()
+    def __str__(self): 
+        return self.product.name
+
+# test models here
+
+class DayTask(models.Model):
+    name = models.CharField(max_length=255,null=True,blank=True)
+    ertalab_sport = models.ManyToManyField(TaskSport,blank=True,related_name="sport_time1")
+    ertalab_dieta = models.ManyToManyField(TaskDieta,blank=True,related_name="dieta_time1")
+    abed_sport = models.ManyToManyField(TaskSport,blank=True,related_name="sport_time2")
+    abed_dieta = models.ManyToManyField(TaskDieta,blank=True,related_name="dieta_time2")
+    kechki_sport = models.ManyToManyField(TaskSport,blank=True,related_name="sport_time3")
+    kechki_dieta = models.ManyToManyField(TaskDieta,blank=True,related_name="dieta_time3")
+    weight_limit = models.IntegerField(default=1)     
+    def __str__(self):
+        return self.name
+
+class WeeklyProgram(models.Model):
+    title = models.CharField(max_length=255)
+    dushanba = models.ForeignKey(DayTask,on_delete=models.CASCADE,related_name="day1")
+    seshanba = models.ForeignKey(DayTask,on_delete=models.CASCADE,related_name="day2")
+    chorshanba = models.ForeignKey(DayTask,on_delete=models.CASCADE,related_name="day3")
+    payshanba = models.ForeignKey(DayTask,on_delete=models.CASCADE,related_name="day4")
+    juma = models.ForeignKey(DayTask,on_delete=models.CASCADE,related_name="day5")
+    shanba = models.ForeignKey(DayTask,on_delete=models.CASCADE,related_name="day6")
+    yakshanba = models.ForeignKey(DayTask,on_delete=models.CASCADE,related_name="day7")
+
+    def __str__(self):
+        return self.title
+

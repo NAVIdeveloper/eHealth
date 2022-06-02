@@ -17,3 +17,6 @@ admin.site.register(Normal)
 admin.site.register(HealthApp)
 admin.site.register(MotivationLetter)
 admin.site.register(FastLost)
+#test
+admin.site.register(WeeklyProgram)
+admin.site.register(DayTask)
