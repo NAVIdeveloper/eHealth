@@ -1,4 +1,5 @@
 from datetime import datetime
+from statistics import mode
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from rest_framework.authtoken.models import Token
@@ -162,23 +163,6 @@ class FastLost(models.Model):
         return self.name_uz
 
 
-
-class DailyMotivation(models.Model):
-    text_uz = models.CharField(max_length=300, null=True, blank=True)
-    text_ru = models.CharField(max_length=300, null=True, blank=True)
-    text_en = models.CharField(max_length=300, null=True, blank=True)
-
-    def __str__(self):
-        return self.text_uz
-
-class WeeklyMusic(models.Model):
-    name = models.CharField(max_length=30, blank=True, null=True)
-    music = models.FileField(upload_to='music/')
-
-    def __str__(self) -> str:
-        return self.name
-
-
 class TaskSport(models.Model):
     activity = models.ForeignKey(Sport, on_delete=models.CASCADE)
     duration = models.IntegerField()
@@ -204,7 +188,7 @@ class DayTask(models.Model):
     abed_dieta = models.ManyToManyField(TaskDieta,blank=True,related_name="dieta_time2")
     kechki_sport = models.ManyToManyField(TaskSport,blank=True,related_name="sport_time3")
     kechki_dieta = models.ManyToManyField(TaskDieta,blank=True,related_name="dieta_time3")
-    weight_limit = models.IntegerField(default=1)     
+    weight_limit = models.IntegerField(default=1)
     def __str__(self):
         return self.name
 
@@ -220,4 +204,46 @@ class WeeklyProgram(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class InfoAboutUs(models.Model):
+    uz_title = models.CharField(max_length=555)
+    en_title = models.CharField(max_length=555)
+    ru_title = models.CharField(max_length=555)
+    
+    img1 = models.ImageField(upload_to="info/")
+    uz_text1 = models.TextField()
+    en_text1 = models.TextField()
+    ru_text1 = models.TextField()
+    
+    img2 = models.ImageField(upload_to="info/")
+    uz_text2 = models.TextField()
+    en_text2 = models.TextField()
+    ru_text2 = models.TextField()
+    
+    phone = models.CharField(max_length=255)
+    email = models.EmailField()
+    facebook = models.URLField()
+    instagram = models.URLField()
+    telegram = models.URLField()
+    application = models.URLField()
+    
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    
+
+    def __str__(self):
+        return self.uz_title
+
+
+class HistoryTask(models.Model):
+    task = models.ForeignKey(DayTask,on_delete=models.PROTECT)
+    date = models.DateField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    steps = models.IntegerField(default=0)
+    did = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.date
+
 

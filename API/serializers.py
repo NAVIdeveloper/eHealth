@@ -75,13 +75,14 @@ class LoaderFastLost(ModelSerializer):
         model = FastLost
         fields = "__all__"
 
-class LoaderWeeklyMusic(ModelSerializer):
+class LoaderInfoAboutUs(ModelSerializer):
     class Meta:
-        model = WeeklyMusic
-        fields = '__all__'
-
-class LoaderDailyMotivation(ModelSerializer):
-    class Meta:
-        model = DailyMotivation
+        model = InfoAboutUs
         fields = "__all__"
+
+class LoaderHistoryTask(ModelSerializer):
+    class Meta:
+        model = HistoryTask
+        fields = "__all__"
+
 

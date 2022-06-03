@@ -182,7 +182,6 @@ class HealthAppViewSet(viewsets.ModelViewSet):
 
         return [IsAdminUser()]
 
-
 class CategoryProductViewSet(viewsets.ModelViewSet):
     queryset = CategoryProduct.objects.all()
     serializer_class = LoaderCategoryProduct
@@ -231,20 +230,9 @@ class FastLostView(viewsets.ModelViewSet):
 
         return [IsAdminUser()]
 
-class WeeklyMusicView(viewsets.ModelViewSet):
-    queryset = WeeklyMusic.objects.all()
-    serializer_class = LoaderWeeklyMusic
-    permission_classes = [IsAdminUser]
-
-    def get_permissions(self):
-        if self.action == "list" or self.action == 'retrieve':
-            return [AllowAny()]
-
-        return [IsAdminUser()]
-
-class DailyMotivationView(viewsets.ModelViewSet):
-    queryset = DailyMotivation.objects.all()
-    serializer_class = LoaderDailyMotivation
+class InfoAboutUsView(viewsets.ModelViewSet):
+    queryset = InfoAboutUs.objects.all()
+    serializer_class = LoaderInfoAboutUs
     permission_classes = [IsAdminUser]
 
     def get_permissions(self):
@@ -286,4 +274,12 @@ def Api_Search_Expert(request):
     data = User.objects.filter(SearchQ(first_name__icontains=search) | SearchQ(last_name__icontains=search) | SearchQ(username__icontains=search),user_type=2)
     return Response(LoaderExpertUser(data,many=True).data)
 
+
+@api_view(['get'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+def Api_Task_History(request):
+    user = request.user
+    data = HistoryReyting.objects.filter(user=user)
+    return Response(LoaderHistoryTask(data).data)
 
