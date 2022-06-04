@@ -14,4 +14,7 @@ router.register('fastlost', FastLostView)
 router.register('info',InfoAboutUsView)
 # router.register("day-motivation",DailyMotivationView)
 # router.register("weekly-music",WeeklyMusicView)
-
+router.register("ill",TypeIllViewSet)
+router.register('footer', FooterViewSet)
+router.register('aboutus', AboutUsViewSet)
+router.register("search_static",SearchStaticViewSet)

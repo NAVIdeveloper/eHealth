@@ -3,6 +3,7 @@ import random
 import datetime
 # Create your views here.
 from .serializers import *
+from .alghoritm import *
 from rest_framework.generics import ListCreateAPIView
 # Create your views here.
 from django.db.models import Max,Min,Q as SearchQ
@@ -14,34 +15,6 @@ from rest_framework.permissions import IsAuthenticated,AllowAny,IsAdminUser
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import viewsets
 from rest_framework.decorators import action
-
-
-def check_algoritm(obj):
-    if obj.height % 2 != 0:
-        obj.height = obj.height -1
-    normals = Normal.objects.filter(age_start__lte=obj.age,age_end__gte=obj.age,height=obj.height)
-    norma = normals[0]
-    if obj.gender == 1:
-        if norma.male_weight < obj.height:
-            return norma.male_weight
-        else:
-            return False
-    else:
-        if norma.female_weight < obj.height:
-            return norma.female_weight
-        else:
-            return False
-
-def a_day_kaloriya(kg:int):
-    return int(kg*15)
-
-
-
-def algoritm_loss(days:int,kg:int):
-    one_kg_kk = 3500
-    have_to_loss_a_day = int(int(kg*one_kg_kk) / days)
-    
-    return have_to_loss_a_day   
 
 
 
@@ -71,8 +44,7 @@ def View_Register(request):
 
             user = User.objects.create(username=username,password=password,email=email,first_name=first_name,last_name=last_name,user_type=int(type_client),bio=bio)
         else:
-            type_g = request.POST['type_g']
-            register_date = datetime.datetime.now()
+            type_g = request.POST['gender']
             age = request.POST['age']
             height = request.POST['height']
             weight = request.POST['weight']
@@ -81,33 +53,40 @@ def View_Register(request):
             can_not_dieta = []
             can_not_sports = []
             user = User.objects.create(
-                gender=int(type_g),register_date=register_date,week_result=weight,age=age,
+                gender=int(type_g),week_result=weight,age=age,
                 weight=weight,height=height,task_type=type_t,
                 username=username,password=password,email=email,first_name=first_name,last_name=last_name,user_type=type_client,going_to_loss=going_to_loss)
             
             if type_t == 1 or type_t == 3:
-                not_sports = request.POST['can_not_sports']
+                not_sports = eval(request.POST['can_not_sports'])
                 for id in not_sports:
-                    id = int(id)
-                    user.task_sport_can_not.add(Sport.objects.get(id=id))
-                
+                    try:
+                        id = int(id)
+                        can_not_sports.append(Sport.objects.get(id=id))
+                    except:
+                        pass
+
             if type_t == 2 or type_t == 3:
-                not_dieta = request.POST['can_not_dieta']
+                not_dieta = eval(request.POST['can_not_dieta'])
                 for id in not_dieta:
-                    id = int(id)
-                    user.task_dieta_can_not.add(Product.objects.get(id=id))
-            user.task_sport_can_not = can_not_sports
-            user.task_dieta_can_not = can_not_dieta
+                    try:
+                        id = int(id)
+                        can_not_dieta.append(Product.objects.get(id=id))
+                    except:
+                        pass
+            user.task_sport_can_not.set(can_not_sports)
+            user.task_dieta_can_not.set(can_not_dieta)
             try:   
                 weekly_task = WeeklyProgram.objects.get(intended_weight=going_to_loss)
             except:
                 if user.going_to_loss >= 10:
-                    weekly_task = WeeklyProgram.objects.all().aggregate(Max('intended_weight')) 
+                    weekly_task = WeeklyProgram.objects.get(id=WeeklyProgram.objects.all().aggregate(Max('intended_weight'))['intended_weight__max']) 
                 elif user.going_to_loss >= 5 and user.going_to_loss < 10:
-                    weekly_task = WeeklyProgram.objects.filter(intended_weight__in=[1,2,3,4,5])
+                    weekly_task = WeeklyProgram.objects.filter(intended_weight__in=[1,2,3])[0]
                 else:
-                    weekly_task = WeeklyProgram.objects.all().aggregate(Min('intended_weight'))
+                    weekly_task = WeeklyProgram.objects.get(id=WeeklyProgram.objects.all().aggregate(Min('intended_weight'))['intended_weight__min'])
 
+            print(weekly_task)
             user.weekly_task = weekly_task
             user.save()
 
@@ -211,6 +190,17 @@ class CategoryProductViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
+class TypeIllViewSet(viewsets.ModelViewSet):
+    queryset = TypeIll.objects.all()
+    serializer_class = LoaderTypeIll
+    permission_classes = [IsAdminUser]
+    
+    def get_permissions(self):
+        if self.action == "list" or self.action == 'retrieve':
+            return [AllowAny()]
+
+        return [IsAdminUser()]
+
 class MotivationLetterViewSet(viewsets.ModelViewSet):
     queryset = MotivationLetter.objects.all()
     serializer_class = LoaderMotivationLetter
@@ -294,5 +284,50 @@ def Api_Task_History(request):
     user = request.user
     data = HistoryReyting.objects.filter(user=user)
     return Response(LoaderHistoryTask(data).data)
-    
 
+@api_view(['get'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+def Api_Get_User_Task(request):
+    user = request.user
+    user.weekly_task
+    today = str(datetime.today().date())
+    week = date_week(today)
+    DATA = {"week":week,"today":today}
+    task = eval(f"user.weekly_task.{week.casefold()}")
+    DATA['task'] = LoaderWeeklyProgram(user.weekly_task).data[week.casefold()]
+    return Response(DATA)
+
+
+class FooterViewSet(viewsets.ModelViewSet):
+    queryset = Footer.objects.all()
+    serializer_class = LoaderFooter
+    permission_classes = [IsAdminUser]
+    
+    def get_permissions(self):
+        if self.action == "list" or self.action == 'retrieve':
+            return [AllowAny()]
+
+        return [IsAdminUser()]
+
+class SearchStaticViewSet(viewsets.ModelViewSet):
+    queryset = SearchStatic.objects.all()
+    serializer_class = LoaderSearchStatic
+    permission_classes = [IsAdminUser]
+    
+    def get_permissions(self):
+        if self.action == "list" or self.action == 'retrieve':
+            return [AllowAny()]
+
+        return [IsAdminUser()]
+
+class AboutUsViewSet(viewsets.ModelViewSet):
+    queryset = AboutUs.objects.all()
+    serializer_class = LoaderAboutUs
+    permission_classes = [IsAdminUser]
+
+    def get_permissions(self):
+        if self.action == "list" or self.action == 'retrieve':
+            return [AllowAny()]
+
+        return [IsAdminUser()]

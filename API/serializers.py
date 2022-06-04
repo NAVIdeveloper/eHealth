@@ -32,11 +32,13 @@ class LoaderHistoryReyting(ModelSerializer):
         fields = "__all__"
 
 class LoaderTaskSport(ModelSerializer):
+    sport = LoaderSport(read_only=True)
     class Meta:
         model = TaskSport
         fields = "__all__"
 
 class LoaderTaskDieta(ModelSerializer):
+    product = LoaderProduct(read_only=True)
     class Meta:
         model = TaskDieta
         fields = "__all__"
@@ -75,6 +77,11 @@ class LoaderFastLost(ModelSerializer):
         model = FastLost
         fields = "__all__"
 
+class LoaderAboutUs(ModelSerializer):
+    class Meta:
+        model = AboutUs
+        fields = "__all__"
+
 class LoaderInfoAboutUs(ModelSerializer):
     class Meta:
         model = InfoAboutUs
@@ -85,4 +92,44 @@ class LoaderHistoryTask(ModelSerializer):
         model = HistoryTask
         fields = "__all__"
 
+
+class LoaderDayTask(ModelSerializer):
+    ertalab_sport = LoaderTaskSport(many=True,read_only=True)
+    ertalab_dieta = LoaderTaskDieta(many=True,read_only=True)
+    abed_sport = LoaderTaskSport(many=True,read_only=True)
+    abed_dieta = LoaderTaskDieta(many=True,read_only=True)
+    kechki_sport = LoaderTaskSport(many=True,read_only=True)
+    kechki_dieta = LoaderTaskDieta(many=True,read_only=True)
+    class Meta:
+        model = DayTask
+        fields = "__all__"
+
+
+class LoaderWeeklyProgram(ModelSerializer):
+    dushanba = LoaderDayTask(read_only=True)
+    seshanba = LoaderDayTask(read_only=True)
+    chorshanba = LoaderDayTask(read_only=True)
+    payshanba = LoaderDayTask(read_only=True)
+    juma = LoaderDayTask(read_only=True)
+    shanba = LoaderDayTask(read_only=True)
+    yakshanba = LoaderDayTask(read_only=True)
+    class Meta:
+        model = WeeklyProgram
+        fields = "__all__"
+
+class LoaderTypeIll(ModelSerializer):
+    class Meta:
+        model = TypeIll
+        fields = "__all__"
+
+
+class LoaderFooter(ModelSerializer):
+    class Meta:
+      model = Footer
+      fields = '__all__'
+    
+class LoaderSearchStatic(ModelSerializer):
+    class Meta:
+        model = SearchStatic
+        fields = "__all__"
 

@@ -1,4 +1,5 @@
 from datetime import datetime
+from itertools import product
 from statistics import mode
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -152,6 +153,37 @@ class MotivationLetter(models.Model):
     def __str__(self):
         return self.text_uz
 
+class TypeIll(models.Model):
+    title_uz = models.CharField(max_length=255)
+    title_ru = models.CharField(max_length=255)
+    title_en = models.CharField(max_length=255)
+
+    text1_uz = models.TextField()
+    text1_ru = models.TextField()
+    text1_en = models.TextField()
+    
+    text2_uz = models.TextField()
+    text2_ru = models.TextField()
+    text2_en = models.TextField()
+    
+    text3_uz = models.TextField()
+    text3_ru = models.TextField()
+    text3_en = models.TextField()
+    
+    text4_uz = models.TextField()
+    text4_ru = models.TextField()
+    text4_en = models.TextField()
+    
+    text5_uz = models.TextField()
+    text5_ru = models.TextField()
+    text5_en = models.TextField()
+
+
+    img = models.ImageField(upload_to='ill/')
+    def __str__(self):
+        return self.title_uz
+
+
 
 class FastLost(models.Model):
     image = models.ImageField(upload_to='fastlost/')
@@ -165,19 +197,19 @@ class FastLost(models.Model):
 
 
 class TaskSport(models.Model):
-    activity = models.ForeignKey(Sport, on_delete=models.CASCADE)
+    sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
     duration = models.IntegerField()
     total_calories =models.IntegerField()
     def __str__(self): 
-        return self.activity.name
+        return f"{self.sport.name} {self.duration}min {self.total_calories}kk"
     
 
 class TaskDieta(models.Model):
-    product = models.ManyToManyField(Product)
+    product = models.ForeignKey(Product,on_delete=models.CASCADE)
     grams = models.IntegerField()
     total_calories =models.IntegerField()
     def __str__(self): 
-        return self.product.name
+        return f"{self.product.name} {self.grams}g {self.total_calories}kk"
 
 # test models here
 
@@ -191,7 +223,7 @@ class DayTask(models.Model):
     kechki_dieta = models.ManyToManyField(TaskDieta,blank=True,related_name="dieta_time3")
     weight_limit = models.IntegerField(default=1)
     def __str__(self):
-        return self.name
+        return self.name + " " + str(self.weight_limit)
 
 class WeeklyProgram(models.Model):
     title = models.CharField(max_length=255)
@@ -207,37 +239,44 @@ class WeeklyProgram(models.Model):
     def __str__(self):
         return self.title
 
+class AboutUs(models.Model):
+    title_uz = models.CharField(max_length = 40, null = True, blank=True)
+    title_ru = models.CharField(max_length = 40, null = True, blank=True)
+    title_en = models.CharField(max_length = 40, null = True, blank=True)
+
+    img1 = models.ImageField(upload_to="info/")
+    uz_text1 = models.TextField()
+    en_text1 = models.TextField()
+    ru_text1 = models.TextField()
+    def __str__(self): 
+        return self.uz_text1
+
 
 class InfoAboutUs(models.Model):
     uz_title = models.CharField(max_length=555)
     en_title = models.CharField(max_length=555)
     ru_title = models.CharField(max_length=555)
+    array = models.ManyToManyField(AboutUs)    
     
-    img1 = models.ImageField(upload_to="info/")
-    uz_text1 = models.TextField()
-    en_text1 = models.TextField()
-    ru_text1 = models.TextField()
-    
-    img2 = models.ImageField(upload_to="info/")
-    uz_text2 = models.TextField()
-    en_text2 = models.TextField()
-    ru_text2 = models.TextField()
-    
+
+    def __str__(self):
+        return self.uz_title
+
+class Footer(models.Model):
+    address = models.CharField(max_length=55, null=True, blank=True)
     phone = models.CharField(max_length=255)
     email = models.EmailField()
     facebook = models.URLField()
     instagram = models.URLField()
     telegram = models.URLField()
     application = models.URLField()
-    
+    work_time = models.TextField()
     latitude = models.FloatField()
     longitude = models.FloatField()
-    
 
     def __str__(self):
-        return self.uz_title
-
-
+        return self.phone
+    
 class HistoryTask(models.Model):
     task = models.ForeignKey(DayTask,on_delete=models.PROTECT)
     date = models.DateField(auto_now_add=True)
@@ -251,3 +290,16 @@ class HistoryTask(models.Model):
         return self.date
 
 
+class SearchStatic(models.Model):
+    title_uz = models.CharField(max_length=255)
+    title_ru = models.CharField(max_length=255)
+    title_en = models.CharField(max_length=255)
+    
+    text_uz = models.TextField()
+    text_en = models.TextField()
+    text_ru = models.TextField()
+
+    img = models.ImageField(upload_to="static/search/")
+
+    def __str__(self):
+        return self.title_uz
