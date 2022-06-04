@@ -5,7 +5,7 @@ import datetime
 from .serializers import *
 from rest_framework.generics import ListCreateAPIView
 # Create your views here.
-from django.db.models import Q as SearchQ
+from django.db.models import Max,Min,Q as SearchQ
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
@@ -57,7 +57,7 @@ def View_Register(request):
     # if len(User.objects.filter(username=username)) == 0:
     try:
         user = User.objects.get(username=username)
-        return Response(status=400)
+        return Response(status=401)
     except:
         if type_client == '2':
             bio = request.POST['bio']
@@ -96,9 +96,21 @@ def View_Register(request):
                 for id in not_dieta:
                     id = int(id)
                     user.task_dieta_can_not.add(Product.objects.get(id=id))
-            # user.task_sport_can_not = can_not_sports
-            # user.task_dieta_can_not = can_not_dieta
-            # user.save()
+            user.task_sport_can_not = can_not_sports
+            user.task_dieta_can_not = can_not_dieta
+            try:   
+                weekly_task = WeeklyProgram.objects.get(intended_weight=going_to_loss)
+            except:
+                if user.going_to_loss >= 10:
+                    weekly_task = WeeklyProgram.objects.all().aggregate(Max('intended_weight')) 
+                elif user.going_to_loss >= 5 and user.going_to_loss < 10:
+                    weekly_task = WeeklyProgram.objects.filter(intended_weight__in=[1,2,3,4,5])
+                else:
+                    weekly_task = WeeklyProgram.objects.all().aggregate(Min('intended_weight'))
+
+            user.weekly_task = weekly_task
+            user.save()
+
         token_key = Token.objects.create(user=user)
         DATA = {
                 "username":username,
@@ -282,4 +294,5 @@ def Api_Task_History(request):
     user = request.user
     data = HistoryReyting.objects.filter(user=user)
     return Response(LoaderHistoryTask(data).data)
+    
 

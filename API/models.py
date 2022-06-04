@@ -54,7 +54,6 @@ class User(AbstractUser):
         (1, "Erkak"),
         (2,"Ayol")]
     gender = models.IntegerField(choices=type_g,null=True,blank=True)
-    register_date = models.DateField(null=True,blank=True)
     week_result = models.IntegerField(default=0,null=True,blank=True)
     avarage = models.IntegerField(default=0,null=True,blank=True)
     age = models.IntegerField(null=True,blank=True)
@@ -67,7 +66,9 @@ class User(AbstractUser):
         (2,"Sport"),
         (3,"All")] 
     task_type = models.IntegerField(choices=type_t,null=True,blank=True)
-    
+
+    weekly_task = models.ForeignKey('WeeklyProgram',on_delete=models.CASCADE,null=True,blank=True)
+
     def __str__(self):
         return self.username
 
@@ -201,6 +202,7 @@ class WeeklyProgram(models.Model):
     juma = models.ForeignKey(DayTask,on_delete=models.CASCADE,related_name="day5")
     shanba = models.ForeignKey(DayTask,on_delete=models.CASCADE,related_name="day6")
     yakshanba = models.ForeignKey(DayTask,on_delete=models.CASCADE,related_name="day7")
+    intended_weight = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         return self.title
@@ -241,8 +243,10 @@ class HistoryTask(models.Model):
     date = models.DateField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     steps = models.IntegerField(default=0)
-    did = models.BooleanField(default=False)
-
+    morning = models.BooleanField(default=False)
+    afternoon = models.BooleanField(default=False)
+    night = models.BooleanField(default=False)
+    
     def __str__(self):
         return self.date
 
