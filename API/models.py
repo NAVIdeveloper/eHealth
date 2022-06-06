@@ -255,8 +255,7 @@ class AboutUs(models.Model):
 class InfoAboutUs(models.Model):
     uz_title = models.CharField(max_length=555)
     en_title = models.CharField(max_length=555)
-    ru_title = models.CharField(max_length=555)
-    array = models.ManyToManyField(AboutUs)    
+    ru_title = models.CharField(max_length=555) 
     
 
     def __str__(self):
