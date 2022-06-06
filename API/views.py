@@ -36,13 +36,17 @@ def View_Register(request):
             bio = request.POST['bio']
             age = request.POST['age']
             experience = request.POST['experience']
-            
+            birthday = request.POST['birthday']
+            addres = request.POST['addres']
+            experience = request.POST['experience']
+            information = request.POST['information']
+
             pic = None
             if 'pic' in request.FILES:
                 pic = request.FILES['pic']
-            phone = request
+            phone = request.POST['phone']
 
-            user = User.objects.create(username=username,password=password,email=email,first_name=first_name,last_name=last_name,user_type=int(type_client),bio=bio)
+            user = User.objects.create(information=information,experience=experience,addres=addres,phone=phone,birthday=birthday,username=username,password=password,email=email,first_name=first_name,last_name=last_name,user_type=int(type_client),bio=bio)
         else:
             type_g = request.POST['gender']
             age = request.POST['age']
@@ -201,17 +205,6 @@ class TypeIllViewSet(viewsets.ModelViewSet):
 
         return [IsAdminUser()]
 
-class MotivationLetterViewSet(viewsets.ModelViewSet):
-    queryset = MotivationLetter.objects.all()
-    serializer_class = LoaderMotivationLetter
-    permission_classes = [IsAdminUser]
-    
-    def get_permissions(self):
-        if self.action == "list" or self.action == 'retrieve':
-            return [AllowAny()]
-
-        return [IsAdminUser()]
-
 @api_view(['get'])
 @permission_classes([AllowAny])
 def Api_Expert(request):
@@ -224,17 +217,6 @@ def Api_Expert(request):
 class FastLostView(viewsets.ModelViewSet):
     queryset = FastLost.objects.all()
     serializer_class = LoaderFastLost
-    permission_classes = [IsAdminUser]
-
-    def get_permissions(self):
-        if self.action == "list" or self.action == 'retrieve':
-            return [AllowAny()]
-
-        return [IsAdminUser()]
-
-class InfoAboutUsView(viewsets.ModelViewSet):
-    queryset = InfoAboutUs.objects.all()
-    serializer_class = LoaderInfoAboutUs
     permission_classes = [IsAdminUser]
 
     def get_permissions(self):
@@ -331,3 +313,28 @@ class AboutUsViewSet(viewsets.ModelViewSet):
             return [AllowAny()]
 
         return [IsAdminUser()]
+
+class CardFastLossTypeViewSet(viewsets.ModelViewSet):   
+    queryset = CardFastLossType.objects.all()
+    serializer_class = LoaderCardFastLossType
+    permission_classes = [IsAdminUser]
+    
+    def get_permissions(self):
+        if self.action == "list" or self.action == 'retrieve':
+            return [AllowAny()]
+
+        return [IsAdminUser()]
+
+@api_view(['get'])
+@permission_classes([AllowAny])
+def Api_Get_Expert(request,pk:int):
+    try:
+        user = User.objects.get(id=pk)
+        if user.user_type == 2:
+            DATA = LoaderExpertUser(user).data
+            return Response(DATA)
+        else:
+            return Response(status=204)
+    except:
+        return Response(status=204)
+

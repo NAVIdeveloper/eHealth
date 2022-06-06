@@ -10,4 +10,6 @@ urlpatterns = [
     path("search/",Api_Search_Expert),
     path("task_history/",Api_Task_History),
     path("user_task/",Api_Get_User_Task),
+    path("expert/<int:pk>/",Api_Get_Expert),
 ]
+

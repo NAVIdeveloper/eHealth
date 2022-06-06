@@ -43,6 +43,7 @@ class User(AbstractUser):
         (1, "client"),
         (2, "expert")
     ), default=1)
+    birthday = models.DateField(null=True,blank=True)
     expert_type = models.IntegerField(choices=(
         (1, "dietolog"),
         (2, "sportsmen")
@@ -70,6 +71,10 @@ class User(AbstractUser):
 
     weekly_task = models.ForeignKey('WeeklyProgram',on_delete=models.CASCADE,null=True,blank=True)
 
+    addres = models.CharField(max_length=255,null=True,blank=True)
+    experience = models.IntegerField(default=1)
+    information = models.IntegerField(default=1,choices=((1,1),(2,2),(3,3)))
+    phone = models.CharField(max_length=255,null=True,blank=True)
     def __str__(self):
         return self.username
 
@@ -89,8 +94,9 @@ class HistoryReyting(models.Model):
         return f"{self.user.username} : {str(self.star)} -> {self.expert.username}"
 
 class New(models.Model):
+    img = models.ImageField(upload_to='news/',max_length=999999)
+
     title = models.CharField(max_length=255)
-    img = models.ImageField(upload_to='news/')
     text = models.TextField(null=True,blank=True)
 
     en_title = models.CharField(max_length=255)
@@ -108,13 +114,6 @@ class Advice(models.Model):
     
     def __str__(self):
         return self.uz_text
-
-class TitleAdvice(models.Model):
-    uz_title = models.CharField(max_length=255)
-    en_title = models.CharField(max_length=255)
-    ru_title = models.CharField(max_length=255)
-    def __str__(self):
-        return self.uz_title
 
 class Normal(models.Model):
     age_start = models.IntegerField()
@@ -145,13 +144,13 @@ class HealthApp(models.Model):
     def __str__(self):
         return self.title_uz
 
-class MotivationLetter(models.Model):
-    text_uz = models.TextField()
-    text_ru = models.TextField()
-    text_en = models.TextField()
-    img = models.ImageField(upload_to='motivation_letter/')
-    def __str__(self):
-        return self.text_uz
+# class MotivationLetter(models.Model):
+#     text_uz = models.TextField()
+#     text_ru = models.TextField()
+#     text_en = models.TextField()
+#     img = models.ImageField(upload_to='motivation_letter/')
+#     def __str__(self):
+#         return self.text_uz
 
 class TypeIll(models.Model):
     title_uz = models.CharField(max_length=255)
@@ -248,18 +247,23 @@ class AboutUs(models.Model):
     uz_text1 = models.TextField()
     en_text1 = models.TextField()
     ru_text1 = models.TextField()
+
+    img2 = models.ImageField(upload_to="info/")
+    uz_text2 = models.TextField()
+    en_text2 = models.TextField()
+    ru_text2 = models.TextField()
+    
     def __str__(self): 
-        return self.uz_text1
+        return str(self.title_uz)
 
-
-class InfoAboutUs(models.Model):
-    uz_title = models.CharField(max_length=555)
-    en_title = models.CharField(max_length=555)
-    ru_title = models.CharField(max_length=555) 
+# class InfoAboutUs(models.Model):
+#     uz_title = models.CharField(max_length=555)
+#     en_title = models.CharField(max_length=555)
+#     ru_title = models.CharField(max_length=555) 
     
 
-    def __str__(self):
-        return self.uz_title
+#     def __str__(self):
+#         return self.uz_title
 
 class Footer(models.Model):
     address = models.CharField(max_length=55, null=True, blank=True)
@@ -302,3 +306,30 @@ class SearchStatic(models.Model):
 
     def __str__(self):
         return self.title_uz
+
+class CardFastLossType(models.Model):
+    title_uz = models.CharField(max_length=255)
+    title_ru = models.CharField(max_length=255)
+    title_en = models.CharField(max_length=255)
+    
+    img1 = models.ImageField(upload_to='card/fastloss/')
+    title_uz1 = models.CharField(max_length=255)
+    title_ru1 = models.CharField(max_length=255)
+    title_en1 = models.CharField(max_length=255)
+    
+    text_uz1 = models.TextField()
+    text_ru1 = models.TextField()
+    text_en1 = models.TextField()
+
+    img2 = models.ImageField(upload_to='card/fastloss/')
+    title_uz2 = models.CharField(max_length=255)
+    title_ru2 = models.CharField(max_length=255)
+    title_en2 = models.CharField(max_length=255)
+    
+    text_uz2 = models.TextField()
+    text_ru2 = models.TextField()
+    text_en2 = models.TextField()
+    
+    def __str__(self) -> str:
+        return self.title_uz
+

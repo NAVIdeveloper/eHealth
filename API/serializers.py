@@ -61,16 +61,16 @@ class LoaderHealthApp(ModelSerializer):
         fields = "__all__"
 
 
-class LoaderMotivationLetter(ModelSerializer):
-    class Meta:
-        model = MotivationLetter
-        fields = "__all__"
+# class LoaderMotivationLetter(ModelSerializer):
+#     class Meta:
+#         model = MotivationLetter
+#         fields = "__all__"
 
 
 class LoaderExpertUser(ModelSerializer):
     class Meta:
         model = User
-        fields = ('first_name','last_name','image','expert_type','reyting','reyting_count')
+        fields = ('id','first_name','last_name','image','expert_type','reyting','reyting_count','birthday','addres','phone','experience','information','gender')
 
 class LoaderFastLost(ModelSerializer):
     class Meta:
@@ -82,10 +82,10 @@ class LoaderAboutUs(ModelSerializer):
         model = AboutUs
         fields = "__all__"
 
-class LoaderInfoAboutUs(ModelSerializer):
-    class Meta:
-        model = InfoAboutUs
-        fields = "__all__"
+# class LoaderInfoAboutUs(ModelSerializer):
+#     class Meta:
+#         model = InfoAboutUs
+#         fields = "__all__"
 
 class LoaderHistoryTask(ModelSerializer):
     class Meta:
@@ -133,3 +133,8 @@ class LoaderSearchStatic(ModelSerializer):
         model = SearchStatic
         fields = "__all__"
 
+
+class LoaderCardFastLossType(ModelSerializer):
+    class Meta:
+        model = CardFastLossType
+        fields = "__all__"
