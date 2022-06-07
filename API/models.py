@@ -243,15 +243,11 @@ class AboutUs(models.Model):
     title_ru = models.CharField(max_length = 40, null = True, blank=True)
     title_en = models.CharField(max_length = 40, null = True, blank=True)
 
-    img1 = models.ImageField(upload_to="info/")
-    uz_text1 = models.TextField()
-    en_text1 = models.TextField()
-    ru_text1 = models.TextField()
+    img = models.ImageField(upload_to="info/")
+    uz_text = models.TextField()
+    en_text = models.TextField()
+    ru_text = models.TextField()
 
-    img2 = models.ImageField(upload_to="info/")
-    uz_text2 = models.TextField()
-    en_text2 = models.TextField()
-    ru_text2 = models.TextField()
     
     def __str__(self): 
         return str(self.title_uz)
@@ -333,3 +329,9 @@ class CardFastLossType(models.Model):
     def __str__(self) -> str:
         return self.title_uz
 
+class QuestionAnswer(models.Model):
+    question = models.TextField()
+    answer = models.TextField()
+
+    def __str__(self) -> str:
+        return self.question

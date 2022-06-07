@@ -93,6 +93,11 @@ class LoaderHistoryTask(ModelSerializer):
         fields = "__all__"
 
 
+class LoaderQuestionAnswer(ModelSerializer):
+    class Meta:
+        model = QuestionAnswer
+        fields = "__all__"
+
 class LoaderDayTask(ModelSerializer):
     ertalab_sport = LoaderTaskSport(many=True,read_only=True)
     ertalab_dieta = LoaderTaskDieta(many=True,read_only=True)

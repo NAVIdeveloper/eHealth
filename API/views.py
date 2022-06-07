@@ -225,6 +225,16 @@ class FastLostView(viewsets.ModelViewSet):
 
         return [IsAdminUser()]
 
+class QuestionAnswerViewSet(viewsets.ModelViewSet):
+    queryset = QuestionAnswer.objects.all()
+    serializer_class = LoaderQuestionAnswer
+    permission_classes = [IsAdminUser]
+
+    def get_permissions(self):
+        if self.action == "list" or self.action == 'retrieve':
+            return [AllowAny()]
+
+        return [IsAdminUser()]
 
 @api_view(['post'])
 @permission_classes([IsAuthenticated])
