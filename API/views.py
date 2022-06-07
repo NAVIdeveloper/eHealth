@@ -348,3 +348,29 @@ def Api_Get_Expert(request,pk:int):
     except:
         return Response(status=204)
 
+
+@api_view(['get'])
+@permission_classes([AllowAny])
+def counter(request):
+    dietolog = User.objects.filter(expert_type = 1)
+    sportsmen = User.objects.filter(expert_type = 2)
+    foydalanuvchi = User.objects.filter(user_type = 1)
+    erkaklar = User.objects.filter(user_type = 1 , gender=1)
+    ayollar = User.objects.filter(user_type = 1 , gender=2)
+
+    sum_dietolog = dietolog.count()
+    sum_sportsmen = sportsmen.count()
+    user_count = foydalanuvchi.count()
+    erkaklar = erkaklar.count()
+    ayollar = ayollar.count()
+    context = {
+        'dietolog' : sum_dietolog,
+        'sportsmen' : sum_sportsmen,
+        'bemorlar' : user_count,
+        'erkaklar' : erkaklar,
+        'ayollar' :ayollar
+
+
+    }
+
+    return Response(context)

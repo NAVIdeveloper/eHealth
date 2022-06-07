@@ -330,8 +330,12 @@ class CardFastLossType(models.Model):
         return self.title_uz
 
 class QuestionAnswer(models.Model):
-    question = models.TextField()
-    answer = models.TextField()
+    question_uz = models.TextField()
+    answer_uz = models.TextField()
+    question_ru = models.TextField()
+    answer_ru = models.TextField()
+    question_en = models.TextField()
+    answer_en = models.TextField()
 
     def __str__(self) -> str:
-        return self.question
+        return self.question_uz

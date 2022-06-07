@@ -1,3 +1,4 @@
+from django import views
 from django.urls import path,include
 from .views import  *
 from .router import router
@@ -11,5 +12,6 @@ urlpatterns = [
     path("task_history/",Api_Task_History),
     path("user_task/",Api_Get_User_Task),
     path("expert/<int:pk>/",Api_Get_Expert),
+    path('info_num', counter)
 ]
 

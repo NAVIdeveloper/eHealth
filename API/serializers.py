@@ -16,11 +16,6 @@ class LoaderSport(ModelSerializer):
         model = Sport
         fields = "__all__"
 
-class LoaderComment(ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = "__all__"
-
 class LoaderUser(ModelSerializer):
     class Meta:
         model = User
@@ -71,6 +66,7 @@ class LoaderExpertUser(ModelSerializer):
     class Meta:
         model = User
         fields = ('id','first_name','last_name','image','expert_type','reyting','reyting_count','birthday','addres','phone','experience','information','gender')
+
 
 class LoaderFastLost(ModelSerializer):
     class Meta:
@@ -143,3 +139,15 @@ class LoaderCardFastLossType(ModelSerializer):
     class Meta:
         model = CardFastLossType
         fields = "__all__"
+
+class LoaderCommentExpertUser(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name','last_name','image','expert_type']
+
+class LoaderComment(ModelSerializer):
+    user = LoaderCommentExpertUser(read_only=True)
+    class Meta:
+        model = Comment
+        fields = "__all__"
+
