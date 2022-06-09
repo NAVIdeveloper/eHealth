@@ -351,7 +351,7 @@ def Api_Get_Expert(request,pk:int):
 
 @api_view(['get'])
 @permission_classes([AllowAny])
-def counter(request):
+def Api_Counter(request):
     dietolog = User.objects.filter(expert_type = 1)
     sportsmen = User.objects.filter(expert_type = 2)
     foydalanuvchi = User.objects.filter(user_type = 1)
@@ -369,8 +369,7 @@ def counter(request):
         'bemorlar' : user_count,
         'erkaklar' : erkaklar,
         'ayollar' :ayollar
-
-
     }
 
     return Response(context)
+
