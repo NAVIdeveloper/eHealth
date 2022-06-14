@@ -1,7 +1,7 @@
 from django.shortcuts import render
 import random
 import datetime
-from datetime import datetime
+from datetime import datetime,timedelta
 # Create your views here.
 from .serializers import *
 from .alghoritm import *
@@ -302,7 +302,7 @@ def Check_Weekly_Program(id):
         not_gived = list(not_gived)
         for g in gived:
             not_gived.remove(g)
-            
+
         program.dushanba = random.choice(not_gived)
         not_gived.remove(program.dushanba)
         
@@ -328,7 +328,6 @@ def Check_Weekly_Program(id):
 
         
 
-
 @api_view(['get'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
@@ -344,6 +343,147 @@ def Api_Get_User_Task(request):
     return Response(DATA)
 
 
+@api_view(['get'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+def Api_All_History_User_Task(request):
+    DATA = {}
+    last_date = None
+    for i in HistoryTask.objects.filter(user=request.user):
+        if last_date != None:
+            day = last_date - i.date
+            if day.days != 1:
+                for r in range(day.days-1):
+                    c = last_date - timedelta(days=1)
+                    DATA[str(c)] = False
+                    last_date = c
+                
+        if i.morning_sport == True and i.morning_diet == True and i.afternoon_sport == True and i.afternoon_diet == True and i.night_sport == True and i.night_diet == True:
+            DATA[str(i.date)] = True
+        else:
+            DATA[str(i.date)] = False
+        last_date = i.date
+    return Response(DATA)
+
+
+@api_view(['get'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+def Api_History_User_Task(request):
+    user = request.user
+    today = str(datetime.today().date())
+    week = date_week(today)
+    DATA = {"week":week,"today":today}
+    task = eval(f"user.weekly_task.{week.casefold()}")
+    try:
+        history = HistoryTask.objects.get(user=user,date=today,task=task)
+    except:
+        history = HistoryTask.objects.create(user=user,date=today,task=task)
+    
+    return Response(LoaderHistoryTask(history).data)
+
+@api_view(['post'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+def Api_Done_User_Task(request):
+    user = request.user
+    today = str(datetime.today().date())
+    week = date_week(today)
+    DATA = {"week":week,"today":today}
+    task = eval(f"user.weekly_task.{week.casefold()}")
+    try:
+        history = HistoryTask.objects.get(user=user,date=today,task=task)
+    except:
+        history = HistoryTask.objects.create(user=user,date=today,task=task)
+    morning = request.POST['morning']
+    afternoon = request.POST['afternoon']
+    night = request.POST['night']
+    steps = request.POST['steps']
+    loosed_weight = 0
+    if str(morning) == '1' and history.morning_sport != True:
+        history.morning_sport = True
+        lossed = 0
+        for i in task.morning_sport.all():
+            lossed += 1/3500 * i.total_calories
+        loosed_weight += lossed
+    elif str(morning) == '2' and history.morning_diet != True:
+        history.morning_diet = True
+        lossed = 0
+        for i in task.morning_diet.all():
+            lossed += 1/3500 * i.total_calories
+        loosed_weight += lossed
+    elif str(morning) == '-1' and history.morning_sport != False:
+        history.morning_sport = False
+        lossed = 0
+        for i in task.morning_sport.all():
+            lossed += 1/3500 * i.total_calories
+        loosed_weight -= lossed
+    elif str(morning) == '-2' and history.morning_diet != False:
+        history.morning_diet = False
+        lossed = 0
+        for i in task.morning_diet.all():
+            lossed += 1/3500 * i.total_calories
+        loosed_weight -= lossed
+
+    if str(afternoon) == '1' and history.afternoon_sport != True:
+        history.afternoon_sport = True
+        lossed = 0
+        for i in task.afternoon_sport.all():
+            lossed += 1/3500 * i.total_calories
+        loosed_weight += lossed
+    elif str(afternoon) == '2' and history.afternoon_diet != True:
+        history.afternoon_diet = True
+        lossed = 0
+        for i in task.afternoon_diet.all():
+            lossed += 1/3500 * i.total_calories
+        loosed_weight += lossed
+    elif str(afternoon) == '-1' and history.afternoon_sport != False:
+        history.afternoon_sport = False
+        lossed = 0
+        for i in task.afternoon_sport.all():
+            lossed += 1/3500 * i.total_calories
+        loosed_weight -= lossed
+    elif str(afternoon) == '-2' and history.afternoon_diet != False:
+        history.afternoon_diet = False
+        lossed = 0
+        for i in task.afternoon_diet.all():
+            lossed += 1/3500 * i.total_calories
+        loosed_weight -= lossed
+        
+    if str(night) == '1' and history.night_sport != True:
+        history.night_sport = True
+        lossed = 0
+        for i in task.night_sport.all():
+            lossed += 1/3500 * i.total_calories
+        loosed_weight += lossed
+    elif str(night) == '2' and history.night_diet != True:
+        history.night_diet = True
+        lossed = 0
+        for i in task.night_diet.all():
+            lossed += 1/3500 * i.total_calories
+        loosed_weight += lossed
+    elif str(night) == '-1' and history.night_sport != False:
+        history.night_sport = False
+        lossed = 0
+        for i in task.night_sport.all():
+            lossed += 1/3500 * i.total_calories
+        loosed_weight -= lossed
+    elif str(night) == '-2' and history.night_diet != False:
+        history.night_diet = False
+        lossed = 0
+        for i in task.night_diet.all():
+            lossed += 1/3500 * i.total_calories
+        loosed_weight -= lossed
+    
+    history.steps = int(steps)
+    history.save()
+    loosed_weight += 1/3500 * history.steps * 0.04
+    user.weight = user.weight - loosed_weight
+    user.save()
+    DATA = LoaderHistoryTask(history).data
+    DATA['lost'] = loosed_weight
+    
+    return Response(DATA)
 
 class FooterViewSet(viewsets.ModelViewSet):
     queryset = Footer.objects.all()
@@ -426,4 +566,5 @@ def Api_Counter(request):
     }
 
     return Response(context)
+
 

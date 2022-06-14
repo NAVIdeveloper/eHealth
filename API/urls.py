@@ -12,6 +12,8 @@ urlpatterns = [
     path("task_history/",Api_Task_History),
     path("user_task/",Api_Get_User_Task),
     path("expert/<int:pk>/",Api_Get_Expert),
-    path('info_num', Api_Counter)
+    path('info_num', Api_Counter),
+    path("post_bajarilgan/",Api_Done_User_Task),
+    path("get_bajarilgan/",Api_History_User_Task),
+    path("get_history/",Api_All_History_User_Task),
 ]
-

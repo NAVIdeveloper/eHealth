@@ -214,12 +214,12 @@ class TaskDieta(models.Model):
 
 class DayTask(models.Model):
     name = models.CharField(max_length=255,null=True,blank=True)
-    ertalab_sport = models.ManyToManyField(TaskSport,blank=True,related_name="sport_time1")
-    ertalab_dieta = models.ManyToManyField(TaskDieta,blank=True,related_name="dieta_time1")
-    abed_sport = models.ManyToManyField(TaskSport,blank=True,related_name="sport_time2")
-    abed_dieta = models.ManyToManyField(TaskDieta,blank=True,related_name="dieta_time2")
-    kechki_sport = models.ManyToManyField(TaskSport,blank=True,related_name="sport_time3")
-    kechki_dieta = models.ManyToManyField(TaskDieta,blank=True,related_name="dieta_time3")
+    morning_sport = models.ManyToManyField(TaskSport,blank=True,related_name="sport_time1")
+    morning_diet = models.ManyToManyField(TaskDieta,blank=True,related_name="dieta_time1")
+    afternoon_sport = models.ManyToManyField(TaskSport,blank=True,related_name="sport_time2")
+    afternoon_diet = models.ManyToManyField(TaskDieta,blank=True,related_name="dieta_time2")
+    night_sport = models.ManyToManyField(TaskSport,blank=True,related_name="sport_time3")
+    night_diet = models.ManyToManyField(TaskDieta,blank=True,related_name="dieta_time3")
     weight_limit = models.IntegerField(default=1)
     def __str__(self):
         return self.name + " " + str(self.weight_limit)
@@ -279,15 +279,21 @@ class Footer(models.Model):
     
 class HistoryTask(models.Model):
     task = models.ForeignKey(DayTask,on_delete=models.PROTECT)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     steps = models.IntegerField(default=0)
-    morning = models.BooleanField(default=False)
-    afternoon = models.BooleanField(default=False)
-    night = models.BooleanField(default=False)
+
+    morning_sport = models.BooleanField(default=False)
+    morning_diet = models.BooleanField(default=False)
+    
+    afternoon_sport = models.BooleanField(default=False)
+    afternoon_diet = models.BooleanField(default=False)
+    
+    night_sport = models.BooleanField(default=False)
+    night_diet = models.BooleanField(default=False)
     
     def __str__(self):
-        return self.date
+        return str(self.date)
 
 
 class SearchStatic(models.Model):
@@ -309,24 +315,12 @@ class CardFastLossType(models.Model):
     title_ru = models.CharField(max_length=255)
     title_en = models.CharField(max_length=255)
     
-    img1 = models.ImageField(upload_to='card/fastloss/')
-    title_uz1 = models.CharField(max_length=255)
-    title_ru1 = models.CharField(max_length=255)
-    title_en1 = models.CharField(max_length=255)
+    img = models.ImageField(upload_to='card/fastloss/')
     
-    text_uz1 = models.TextField()
-    text_ru1 = models.TextField()
-    text_en1 = models.TextField()
+    text_uz = models.TextField()
+    text_ru = models.TextField()
+    text_en = models.TextField()
 
-    img2 = models.ImageField(upload_to='card/fastloss/')
-    title_uz2 = models.CharField(max_length=255)
-    title_ru2 = models.CharField(max_length=255)
-    title_en2 = models.CharField(max_length=255)
-    
-    text_uz2 = models.TextField()
-    text_ru2 = models.TextField()
-    text_en2 = models.TextField()
-    
     def __str__(self) -> str:
         return self.title_uz
 
