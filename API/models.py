@@ -234,7 +234,8 @@ class WeeklyProgram(models.Model):
     shanba = models.ForeignKey(DayTask,on_delete=models.CASCADE,related_name="day6")
     yakshanba = models.ForeignKey(DayTask,on_delete=models.CASCADE,related_name="day7")
     intended_weight = models.PositiveIntegerField(default=1)
-
+    last_update = models.DateTimeField(null=True, blank=True)
+    
     def __str__(self):
         return self.title
 

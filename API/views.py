@@ -1,6 +1,7 @@
 from django.shortcuts import render
 import random
 import datetime
+from datetime import datetime
 # Create your views here.
 from .serializers import *
 from .alghoritm import *
@@ -277,18 +278,71 @@ def Api_Task_History(request):
     data = HistoryReyting.objects.filter(user=user)
     return Response(LoaderHistoryTask(data).data)
 
+
+def Check_Weekly_Program(id):
+    program = WeeklyProgram.objects.get(id=id)
+    old_date = program.last_update
+    today = datetime.today()
+    print(today)
+    print(old_date)
+    days = today.date() - old_date.date()
+    if days.days < 7:
+        pass
+    else:
+        gived = [
+            program.yakshanba,
+            program.dushanba,
+            program.seshanba,
+            program.chorshanba,
+            program.payshanba,
+            program.juma,
+            program.shanba
+        ]
+        not_gived = DayTask.objects.filter(weight_limit=program.intended_weight)
+        not_gived = list(not_gived)
+        for g in gived:
+            not_gived.remove(g)
+            
+        program.dushanba = random.choice(not_gived)
+        not_gived.remove(program.dushanba)
+        
+        program.seshanba = random.choice(not_gived)
+        not_gived.remove(program.seshanba)
+        
+        program.chorshanba = random.choice(not_gived)
+        not_gived.remove(program.chorshanba)
+        
+        program.payshanba = random.choice(not_gived)
+        not_gived.remove(program.payshanba)
+        
+        program.juma = random.choice(not_gived)
+        not_gived.remove(program.juma)
+        
+        program.shanba = random.choice(not_gived)
+        not_gived.remove(program.shanba)
+        
+        program.yakshanba = random.choice(not_gived)
+        not_gived.remove(program.yakshanba)
+        program.last_update = today
+        program.save()
+
+        
+
+
 @api_view(['get'])
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
 def Api_Get_User_Task(request):
     user = request.user
     user.weekly_task
+    Check_Weekly_Program(user.weekly_task.id)
     today = str(datetime.today().date())
     week = date_week(today)
     DATA = {"week":week,"today":today}
     task = eval(f"user.weekly_task.{week.casefold()}")
     DATA['task'] = LoaderWeeklyProgram(user.weekly_task).data[week.casefold()]
     return Response(DATA)
+
 
 
 class FooterViewSet(viewsets.ModelViewSet):
