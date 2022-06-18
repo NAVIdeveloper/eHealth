@@ -16,7 +16,7 @@ from rest_framework.permissions import IsAuthenticated,AllowAny,IsAdminUser
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import viewsets
 from rest_framework.decorators import action
-
+from django.contrib.auth import authenticate
 
 
 @api_view(['post'])
@@ -31,15 +31,14 @@ def View_Register(request):
     # if len(User.objects.filter(username=username)) == 0:
     try:
         user = User.objects.get(username=username)
-        return Response(status=401)
+        return Response(1)
     except:
-        if type_client == '2':
+        if type_client == '2' or type_client == '3':
             bio = request.POST['bio']
             age = request.POST['age']
             experience = request.POST['experience']
             birthday = request.POST['birthday']
             addres = request.POST['addres']
-            experience = request.POST['experience']
             information = request.POST['information']
 
             pic = None
@@ -546,8 +545,8 @@ def Api_Get_Expert(request,pk:int):
 @api_view(['get'])
 @permission_classes([AllowAny])
 def Api_Counter(request):
-    dietolog = User.objects.filter(expert_type = 1)
-    sportsmen = User.objects.filter(expert_type = 2)
+    dietolog = User.objects.filter(user_type = 3)
+    sportsmen = User.objects.filter(user_type = 2)
     foydalanuvchi = User.objects.filter(user_type = 1)
     erkaklar = User.objects.filter(user_type = 1 , gender=1)
     ayollar = User.objects.filter(user_type = 1 , gender=2)
@@ -568,3 +567,32 @@ def Api_Counter(request):
     return Response(context)
 
 
+@api_view(['post'])
+@permission_classes([AllowAny])
+def loginpage(request):
+    username = request.POST['username']
+    password=request.POST['password']
+    print(username)
+    print(password)
+    try:
+        user = User.objects.get(username = username)
+        if str(user.password) == str(password):
+            token = Token.objects.get(user=user)
+            return Response(token.key)
+        else:
+            return Response(404)            
+    except Exception as e:
+        print(e)
+        return Response(404)
+
+@api_view(['post'])
+@permission_classes([AllowAny])
+def is_email_user(request):
+    email = request.POST['email']
+    name = request.POST['username']
+    nameusers = User.objects.filter(username=name)
+    users = User.objects.filter(email=email)
+    if nameusers.count() == 0 and users.count() == 0:
+        return Response(401)
+    else:
+        return Response(200)

@@ -16,4 +16,6 @@ urlpatterns = [
     path("post_bajarilgan/",Api_Done_User_Task),
     path("get_bajarilgan/",Api_History_User_Task),
     path("get_history/",Api_All_History_User_Task),
+    path("kirish/",loginpage),
+    path("email/",is_email_user),
 ]
