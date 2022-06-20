@@ -568,3 +568,9 @@ def Api_Counter(request):
     return Response(context)
 
 
+from rest_framework import generics
+
+class ListDietolog(generics.ListAPIView):
+    queryset = User.objects.filter(expert_type = 1)  
+    serializer_class = LoaderExpertUser
+    permission_classes = [AllowAny]
