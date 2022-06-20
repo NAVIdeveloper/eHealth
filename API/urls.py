@@ -3,6 +3,7 @@ from django.urls import path,include
 from .views import  *
 from .router import router
 
+
 urlpatterns = [
     path("register/",View_Register),
     path("",include(router.urls)),
@@ -18,6 +19,6 @@ urlpatterns = [
     path("get_history/",Api_All_History_User_Task),
     path("kirish/",loginpage),
     path("email/",is_email_user),
-    path('get_dietolog/',ListDietolog.as_view()),
-    path("get_treyner/",ListSportsmen.as_view()),
+    path('get_dietolog/',Api_Dietolog),
+    path("get_treyner/",Api_Sportsmen),
 ]

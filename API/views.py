@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import generics
+# from rest_framework import generics
 import random
 import datetime
 from datetime import datetime,timedelta
@@ -29,6 +29,7 @@ def View_Register(request):
     password = request.POST['password']
     first_name = request.POST['first_name']
     last_name = request.POST['last_name']
+    type_g = request.POST['gender']
     # if len(User.objects.filter(username=username)) == 0:
     try:
         user = User.objects.get(username=username)
@@ -47,9 +48,8 @@ def View_Register(request):
                 pic = request.FILES['pic']
             phone = request.POST['phone']
 
-            user = User.objects.create(information=information,experience=experience,addres=addres,phone=phone,birthday=birthday,username=username,password=password,email=email,first_name=first_name,last_name=last_name,user_type=int(type_client),bio=bio)
+            user = User.objects.create(information=information,experience=experience,addres=addres,gender=int(type_g),phone=phone,birthday=birthday,username=username,password=password,email=email,first_name=first_name,last_name=last_name,user_type=int(type_client),bio=bio)
         else:
-            type_g = request.POST['gender']
             age = request.POST['age']
             height = request.POST['height']
             weight = request.POST['weight']
@@ -64,9 +64,7 @@ def View_Register(request):
             
             if type_t == 1 or type_t == 3:
                 not_sports = eval(f"""[{request.POST['can_not_sports']}]""")
-                print(type(not_sports))
-                print("Sport")
-                print(not_sports)
+                print(print(request.POST['can_not_sports']))
                 for id in not_sports:
                     try:
                         id = int(id)
@@ -76,8 +74,7 @@ def View_Register(request):
 
             if type_t == 2 or type_t == 3:
                 not_dieta = eval(f"""[{request.POST['can_not_dieta']}]""")
-                print(not_dieta)
-                print(type(not_dieta))
+                print(request.POST['can_not_dieta'])
                 for id in not_dieta:
                     try:
                         id = int(id)
@@ -604,12 +601,34 @@ def is_email_user(request):
 
 
 
-class ListDietolog(generics.ListAPIView):
-    queryset = User.objects.filter(user_type = 3)  
-    serializer_class = LoaderExpertUser
-    permission_classes = [AllowAny]
+# class ListDietolog(generics.ListAPIView):
+#     queryset = User.objects.filter(user_type = 3)  
+#     serializer_class = LoaderExpertUser
+#     permission_classes = [AllowAny]
 
-class ListSportsmen(generics.ListAPIView):
-    queryset = User.objects.filter(user_type = 2)  
-    serializer_class = LoaderExpertUser
-    permission_classes = [AllowAny]
+# class ListSportsmen(generics.ListAPIView):
+#     queryset = User.objects.filter(user_type = 2)  
+#     serializer_class = LoaderExpertUser
+#     permission_classes = [AllowAny]
+
+@api_view(['get'])
+@permission_classes([AllowAny])
+def Api_Dietolog(request):
+    user = User.objects.filter(user_type = 3) 
+    data = LoaderExpertUser(user,many=True).data
+    for i in data:
+        i['reyting'] = i['reyting'] / i['reyting_count'] 
+        del i['reyting_count']
+    return Response(data)
+
+
+@api_view(['get'])
+@permission_classes([AllowAny])
+def Api_Sportsmen(request):
+    user = User.objects.filter(user_type = 2)
+    data = LoaderExpertUser(user,many=True).data 
+    for i in data:
+        i['reyting'] = i['reyting'] / i['reyting_count'] 
+        del i['reyting_count']
+    
+    return Response()

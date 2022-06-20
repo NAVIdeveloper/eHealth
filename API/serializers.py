@@ -67,7 +67,6 @@ class LoaderExpertUser(ModelSerializer):
         model = User
         fields = ('id','first_name','last_name','user_type','image','reyting','reyting_count','birthday','addres','phone','experience','information','gender')
 
-
 class LoaderFastLost(ModelSerializer):
     class Meta:
         model = FastLost
