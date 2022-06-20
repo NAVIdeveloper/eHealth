@@ -18,4 +18,6 @@ urlpatterns = [
     path("get_history/",Api_All_History_User_Task),
     path("kirish/",loginpage),
     path("email/",is_email_user),
+    path('get_dietolog/',ListDietolog.as_view()),
+    path("get_treyner/",ListSportsmen.as_view()),
 ]

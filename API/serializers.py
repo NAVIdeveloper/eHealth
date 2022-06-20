@@ -65,7 +65,7 @@ class LoaderHealthApp(ModelSerializer):
 class LoaderExpertUser(ModelSerializer):
     class Meta:
         model = User
-        fields = ('id','first_name','last_name','image','expert_type','reyting','reyting_count','birthday','addres','phone','experience','information','gender')
+        fields = ('id','first_name','last_name','user_type','image','reyting','reyting_count','birthday','addres','phone','experience','information','gender')
 
 
 class LoaderFastLost(ModelSerializer):
@@ -143,8 +143,8 @@ class LoaderCardFastLossType(ModelSerializer):
 class LoaderCommentExpertUser(ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name','last_name','image','expert_type']
 
+        fields = ['first_name','last_name','image','user_type']
 class LoaderComment(ModelSerializer):
     user = LoaderCommentExpertUser(read_only=True)
     class Meta:

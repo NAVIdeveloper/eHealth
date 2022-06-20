@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from rest_framework import generics
 import random
 import datetime
 from datetime import datetime,timedelta
@@ -62,7 +63,10 @@ def View_Register(request):
                 username=username,password=password,email=email,first_name=first_name,last_name=last_name,user_type=type_client,going_to_loss=going_to_loss)
             
             if type_t == 1 or type_t == 3:
-                not_sports = eval(request.POST['can_not_sports'])
+                not_sports = eval(f"""[{request.POST['can_not_sports']}]""")
+                print(type(not_sports))
+                print("Sport")
+                print(not_sports)
                 for id in not_sports:
                     try:
                         id = int(id)
@@ -71,7 +75,9 @@ def View_Register(request):
                         pass
 
             if type_t == 2 or type_t == 3:
-                not_dieta = eval(request.POST['can_not_dieta'])
+                not_dieta = eval(f"""[{request.POST['can_not_dieta']}]""")
+                print(not_dieta)
+                print(type(not_dieta))
                 for id in not_dieta:
                     try:
                         id = int(id)
@@ -572,8 +578,7 @@ def Api_Counter(request):
 def loginpage(request):
     username = request.POST['username']
     password=request.POST['password']
-    print(username)
-    print(password)
+
     try:
         user = User.objects.get(username = username)
         if str(user.password) == str(password):
@@ -596,3 +601,15 @@ def is_email_user(request):
         return Response(401)
     else:
         return Response(200)
+
+
+
+class ListDietolog(generics.ListAPIView):
+    queryset = User.objects.filter(user_type = 3)  
+    serializer_class = LoaderExpertUser
+    permission_classes = [AllowAny]
+
+class ListSportsmen(generics.ListAPIView):
+    queryset = User.objects.filter(user_type = 2)  
+    serializer_class = LoaderExpertUser
+    permission_classes = [AllowAny]
