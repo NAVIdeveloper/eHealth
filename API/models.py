@@ -37,17 +37,15 @@ class Sport(models.Model):
         return self.name
 
 class User(AbstractUser):
+    email = models.EmailField(unique=True)
     image = models.ImageField(upload_to='profile/',null=True,blank=True)
     going_to_loss = models.IntegerField(default=0,null=True,blank=True)
     user_type = models.IntegerField(choices=(
         (1, "client"),
-        (2, "expert")
+        (2, "sportsmen"),
+        (3,"dietolog"),
     ), default=1)
     birthday = models.DateField(null=True,blank=True)
-    expert_type = models.IntegerField(choices=(
-        (1, "dietolog"),
-        (2, "sportsmen")
-    ),null=True,blank=True)
     bio = models.TextField(null=True,blank=True)
     network = models.URLField(null=True,blank=True)
     reyting = models.FloatField(default=0,null=True,blank=True)

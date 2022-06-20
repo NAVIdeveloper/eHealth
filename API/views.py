@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from rest_framework import generics
 import random
 import datetime
 from datetime import datetime,timedelta
@@ -16,7 +17,7 @@ from rest_framework.permissions import IsAuthenticated,AllowAny,IsAdminUser
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import viewsets
 from rest_framework.decorators import action
-
+from django.contrib.auth import authenticate
 
 
 @api_view(['post'])
@@ -31,15 +32,14 @@ def View_Register(request):
     # if len(User.objects.filter(username=username)) == 0:
     try:
         user = User.objects.get(username=username)
-        return Response(status=401)
+        return Response(1)
     except:
-        if type_client == '2':
+        if type_client == '2' or type_client == '3':
             bio = request.POST['bio']
             age = request.POST['age']
             experience = request.POST['experience']
             birthday = request.POST['birthday']
             addres = request.POST['addres']
-            experience = request.POST['experience']
             information = request.POST['information']
 
             pic = None
@@ -63,7 +63,10 @@ def View_Register(request):
                 username=username,password=password,email=email,first_name=first_name,last_name=last_name,user_type=type_client,going_to_loss=going_to_loss)
             
             if type_t == 1 or type_t == 3:
-                not_sports = eval(request.POST['can_not_sports'])
+                not_sports = eval(f"""[{request.POST['can_not_sports']}]""")
+                print(type(not_sports))
+                print("Sport")
+                print(not_sports)
                 for id in not_sports:
                     try:
                         id = int(id)
@@ -72,7 +75,9 @@ def View_Register(request):
                         pass
 
             if type_t == 2 or type_t == 3:
-                not_dieta = eval(request.POST['can_not_dieta'])
+                not_dieta = eval(f"""[{request.POST['can_not_dieta']}]""")
+                print(not_dieta)
+                print(type(not_dieta))
                 for id in not_dieta:
                     try:
                         id = int(id)
@@ -546,8 +551,8 @@ def Api_Get_Expert(request,pk:int):
 @api_view(['get'])
 @permission_classes([AllowAny])
 def Api_Counter(request):
-    dietolog = User.objects.filter(expert_type = 1)
-    sportsmen = User.objects.filter(expert_type = 2)
+    dietolog = User.objects.filter(user_type = 3)
+    sportsmen = User.objects.filter(user_type = 2)
     foydalanuvchi = User.objects.filter(user_type = 1)
     erkaklar = User.objects.filter(user_type = 1 , gender=1)
     ayollar = User.objects.filter(user_type = 1 , gender=2)
@@ -568,9 +573,50 @@ def Api_Counter(request):
     return Response(context)
 
 
+<<<<<<< HEAD
 from rest_framework import generics
 
 class ListDietolog(generics.ListAPIView):
     queryset = User.objects.filter(expert_type = 1)  
+=======
+@api_view(['post'])
+@permission_classes([AllowAny])
+def loginpage(request):
+    username = request.POST['username']
+    password=request.POST['password']
+
+    try:
+        user = User.objects.get(username = username)
+        if str(user.password) == str(password):
+            token = Token.objects.get(user=user)
+            return Response(token.key)
+        else:
+            return Response(404)            
+    except Exception as e:
+        print(e)
+        return Response(404)
+
+@api_view(['post'])
+@permission_classes([AllowAny])
+def is_email_user(request):
+    email = request.POST['email']
+    name = request.POST['username']
+    nameusers = User.objects.filter(username=name)
+    users = User.objects.filter(email=email)
+    if nameusers.count() == 0 and users.count() == 0:
+        return Response(401)
+    else:
+        return Response(200)
+
+
+
+class ListDietolog(generics.ListAPIView):
+    queryset = User.objects.filter(user_type = 3)  
+    serializer_class = LoaderExpertUser
+    permission_classes = [AllowAny]
+
+class ListSportsmen(generics.ListAPIView):
+    queryset = User.objects.filter(user_type = 2)  
+>>>>>>> 55166b053ec8721aeccbf438a95b17d212f4acfb
     serializer_class = LoaderExpertUser
     permission_classes = [AllowAny]
