@@ -98,11 +98,8 @@ def View_Register(request):
             user.save()
 
         token_key = Token.objects.create(user=user)
-        DATA = {
-                "username":username,
-                "key":str(token_key),
-                "type_client":type_client,
-            }
+        DATA = str(token_key)
+            
         return Response(DATA)
 
 
@@ -266,9 +263,11 @@ def View_Post_Reyting(request):
 
 
 @api_view(['get'])
+@permission_classes([AllowAny])
 def Api_Search_Expert(request):
     search = request.GET['search']
-    data = User.objects.filter(SearchQ(first_name__icontains=search) | SearchQ(last_name__icontains=search) | SearchQ(username__icontains=search),user_type=2)
+    data = User.objects.filter(SearchQ(first_name__icontains=search) | SearchQ(last_name__icontains=search) | SearchQ(username__icontains=search))
+    
     return Response(LoaderExpertUser(data,many=True).data)
 
 
@@ -590,6 +589,7 @@ def loginpage(request):
 @api_view(['post'])
 @permission_classes([AllowAny])
 def is_email_user(request):
+    print(request.POST)
     email = request.POST['email']
     name = request.POST['username']
     nameusers = User.objects.filter(username=name)
@@ -617,7 +617,10 @@ def Api_Dietolog(request):
     user = User.objects.filter(user_type = 3) 
     data = LoaderExpertUser(user,many=True).data
     for i in data:
-        i['reyting'] = i['reyting'] / i['reyting_count'] 
+        try:
+            i['reyting'] = i['reyting'] / i['reyting_count'] 
+        except:
+            i['reyting'] = 0
         del i['reyting_count']
     return Response(data)
 
@@ -628,7 +631,30 @@ def Api_Sportsmen(request):
     user = User.objects.filter(user_type = 2)
     data = LoaderExpertUser(user,many=True).data 
     for i in data:
-        i['reyting'] = i['reyting'] / i['reyting_count'] 
+        try:
+            i['reyting'] = i['reyting'] / i['reyting_count'] 
+        except:
+            i['reyting'] = 0
         del i['reyting_count']
     
-    return Response()
+    return Response(data)
+
+@api_view(['get'])
+@permission_classes([AllowAny])
+def Api_Sportsmen(request):
+    user = User.objects.filter(user_type = 2)
+    data = LoaderExpertUser(user,many=True).data 
+    for i in data:
+        try:
+            i['reyting'] = i['reyting'] / i['reyting_count'] 
+        except:
+            i['reyting'] = 0
+        del i['reyting_count']
+    
+    return Response(data)
+
+@api_view(['get'])
+@permission_classes([IsAuthenticated])
+def Api_Get_User(request):
+    user = request.user
+    return Response(LoaderClient(user).data)

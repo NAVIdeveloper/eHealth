@@ -150,3 +150,13 @@ class LoaderComment(ModelSerializer):
         model = Comment
         fields = "__all__"
 
+class LoaderClient(ModelSerializer):
+    class Meta:
+        depth = 1
+        model = User
+        fields = ['first_name','last_name',
+        'username','email','image','user_type',
+        'birthday','gender','week_result','age',
+        'height','weight','task_sport_can_not',
+        "task_dieta_can_not",'task_type','weekly_task']
+        

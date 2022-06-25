@@ -21,4 +21,5 @@ urlpatterns = [
     path("email/",is_email_user),
     path('get_dietolog/',Api_Dietolog),
     path("get_treyner/",Api_Sportsmen),
+    path("user/",Api_Get_User),
 ]
