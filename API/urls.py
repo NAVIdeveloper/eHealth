@@ -22,4 +22,5 @@ urlpatterns = [
     path('get_dietolog/',Api_Dietolog),
     path("get_treyner/",Api_Sportsmen),
     path("user/",Api_Get_User),
+    path('get_user/<int:id>/', get_user),
 ]

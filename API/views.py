@@ -658,3 +658,12 @@ def Api_Sportsmen(request):
 def Api_Get_User(request):
     user = request.user
     return Response(LoaderClient(user).data)
+
+
+@api_view(['get'])
+@permission_classes([AllowAny])
+def get_user(request,id):
+    user = User.objects.get(id = id)
+    data = LoaderExpertUser(user)
+    
+    return Response(data.data)
