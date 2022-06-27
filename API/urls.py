@@ -23,4 +23,7 @@ urlpatterns = [
     path("get_treyner/",Api_Sportsmen),
     path("user/",Api_Get_User),
     path('get_user/<int:id>/', get_user),
+    
+    path("admin_user/",Api_Admin_Login),
+    path("admin_password/",Api_Admin_Change_Password)
 ]

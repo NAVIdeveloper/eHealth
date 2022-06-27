@@ -667,3 +667,33 @@ def get_user(request,id):
     data = LoaderExpertUser(user)
     
     return Response(data.data)
+
+@api_view(['post'])
+@permission_classes([AllowAny])
+def Api_Admin_Login(request):
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    try:
+        user = User.objects.get(username=username)
+        if user.check_password(password):
+            if user.is_superuser:
+                try:
+                    token = Token.objects.get(user=user)
+                except:
+                    token = Token.objects.create(user=user)
+                return Response(str(token))
+            else:
+                return Response(status=404)
+        else:    
+            return Response(status=404)   
+    except:
+        return Response(status=404)
+
+@api_view(['post'])
+@permission_classes([IsAdminUser])
+def Api_Admin_Change_Password(request):
+    new = request.POST.get('new_password')
+    user = request.user
+    user.set_password(new)
+    user.save()
+    return Response(status=200)
