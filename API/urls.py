@@ -25,5 +25,9 @@ urlpatterns = [
     path('get_user/<int:id>/', get_user),
     
     path("admin_user/",Api_Admin_Login),
-    path("admin_password/",Api_Admin_Change_Password)
+    path("admin_password/",Api_Admin_Change_Password),
+
+    path("update_user/",Api_Update_User),
+    path("contact/",ContactUs_Post),
+    path("contact_get/",ContactUs_Get),
 ]

@@ -127,7 +127,7 @@ class LoaderFooter(ModelSerializer):
     class Meta:
       model = Footer
       fields = '__all__'
-    
+
 class LoaderSearchStatic(ModelSerializer):
     class Meta:
         model = SearchStatic
@@ -143,7 +143,7 @@ class LoaderCommentExpertUser(ModelSerializer):
     class Meta:
         model = User
 
-        fields = ['first_name','last_name','image','user_type']
+        fields = ['id','first_name','last_name','image','user_type']
 class LoaderComment(ModelSerializer):
     user = LoaderCommentExpertUser(read_only=True)
     class Meta:
@@ -154,9 +154,13 @@ class LoaderClient(ModelSerializer):
     class Meta:
         depth = 1
         model = User
-        fields = ['first_name','last_name',
+        fields = ['id','first_name','last_name',
         'username','email','image','user_type',
         'birthday','gender','week_result','age',
         'height','weight','task_sport_can_not',
         "task_dieta_can_not",'task_type','weekly_task']
-        
+
+class LoaderContactUs(ModelSerializer):
+    class Meta:
+        model = ContactUs
+        fields = "__all__"

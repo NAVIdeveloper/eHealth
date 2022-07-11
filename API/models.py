@@ -6,6 +6,15 @@ from django.contrib.auth.models import AbstractUser
 from rest_framework.authtoken.models import Token
 # Create your models here.
 
+class ContactUs(models.Model):
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    phone = models.CharField(max_length=255)
+    message = models.TextField()
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+
 class CategoryProduct(models.Model):
     name = models.CharField(max_length=255)
     en_name = models.CharField(max_length=255)

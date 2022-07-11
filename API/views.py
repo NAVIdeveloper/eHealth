@@ -1,3 +1,4 @@
+from doctest import REPORT_NDIFF
 from django.shortcuts import render
 # from rest_framework import generics
 import random
@@ -697,3 +698,44 @@ def Api_Admin_Change_Password(request):
     user.set_password(new)
     user.save()
     return Response(status=200)
+
+@api_view(['put'])
+@permission_classes([IsAuthenticated])
+def Api_Update_User(request):
+    try:
+        user = request.user
+        last_name = request.data.get("last_name")
+        first_name = request.data.get("first_name")
+        username = request.data.get("username")
+        age = request.data.get("age")
+        weight =  request.data.get("weight")
+        height =  request.data.get("height")
+        user.last_name = last_name
+        user.first_name = first_name
+        user.username = username
+        user.age = age    
+        user.weight = weight
+        user.height = height
+        user.save()
+        return Response(LoaderClient(user).data)
+    except:
+        return Response(status=401)
+
+@api_view(['post'])
+@permission_classes([AllowAny])
+def ContactUs_Post(request):
+    try:
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        phone = request.POST['phone']
+        message = request.POST['message']
+        c = ContactUs.objects.create(first_name=first_name,last_name=last_name,phone=phone,message=message)
+        return Response(LoaderContactUs(c).data)
+    except Exception as e:
+        return Response(str(e))
+
+@api_view(['get'])
+@permission_classes([IsAdminUser])
+def ContactUs_Get(request):
+    data = LoaderContactUs(ContactUs.objects.all().order_by("-id"),many=True).data
+    return Response(data)
